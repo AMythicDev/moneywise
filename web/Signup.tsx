@@ -1,15 +1,17 @@
 import Input from "./components/Input";
 import Button from "./components/Button";
 import Label from "./components/Label";
+import { API_URL } from "./consts";
 import { useState } from "react";
 
 export default function Login({ onPathChange }: { onPathChange: (path: string) => void }) {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cpassword, setCPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const isPasswordValid = () => {
     if (password.length > 0 && password.length < 8) {
@@ -24,13 +26,34 @@ export default function Login({ onPathChange }: { onPathChange: (path: string) =
     return true;
   }
 
+  const signUpUser = async (e: Event) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      if (!isPasswordValid() || !isCPasswordValid()) {
+        return;
+      }
+      const user = {
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
+        password: password
+      }
+      const response = await fetch(`${API_URL}/signup`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(user) })
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-100 flex flex-col bg-white min-h-screen justify-center items-center">
       <div className="w-max p-10 bg-white/70 shadow-xl rounded-lg backdrop-blur-sm">
         <h1 className="text-2xl font-extrabold text-center mb-2">Create your Account</h1>
         <p className="text-center w-full mb-6 text-gray-600 text-sm">Start your journey to better financial management</p>
-        <form className="flex flex-col gap-2 mb-3">
+        <form className="flex flex-col gap-2 mb-3" onSubmit={signUpUser}>
           <div className="flex gap-3">
             <div>
               <Label htmlFor="firstname">First Name</Label>
@@ -41,8 +64,8 @@ export default function Login({ onPathChange }: { onPathChange: (path: string) =
               <Input type="text" className="border-gray-200 bg-white" placeholder="doe" id="lastname" value={lastname} onChange={(e) => setLastname(e.target.value)} />
             </div>
           </div>
-          <Label htmlFor="username">Username</Label>
-          <Input type="text" className="border-gray-200 bg-white" placeholder="johndoe" id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <Label htmlFor="email">Email</Label>
+          <Input type="email" className="border-gray-200 bg-white" placeholder="johndoe@email.com" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           <Label htmlFor="password">Password</Label>
           <Input type={showPassword ? 'text' : `password`} className={`border-gray-200 bg-white ${isPasswordValid() ? 'mb-2' : ''}`} placeholder="Create a strong password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           {!isPasswordValid() ?
@@ -63,7 +86,7 @@ export default function Login({ onPathChange }: { onPathChange: (path: string) =
             </Label>
           </div>
 
-          <Button type="submit">Sign Up</Button>
+          <Button loading={isLoading} type="submit">{isLoading ? "Signing up..." : "Sign Up"}</Button>
         </form>
         <p className="text-center">Already have an account? <a href="#" onClick={() => onPathChange("signin")} className="text-cyan-700 hover:text-cyan-900">Sign In</a> </p>
       </div >
