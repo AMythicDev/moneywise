@@ -1,8 +1,30 @@
 import Input from "./components/Input";
 import Button from "./components/Button";
 import Label from "./components/Label";
+import { useState } from "react";
 
 export default function Login({ onPathChange }: { onPathChange: (path: string) => void }) {
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [cpassword, setCPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const isPasswordValid = () => {
+    if (password.length > 0 && password.length < 8) {
+      return false;
+    }
+    return true;
+  }
+  const isCPasswordValid = () => {
+    if (cpassword.length > 0 && cpassword != password) {
+      return false;
+    }
+    return true;
+  }
+
+
   return (
     <div className="bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-100 flex flex-col bg-white min-h-screen justify-center items-center">
       <div className="w-max p-10 bg-white/70 shadow-xl rounded-lg backdrop-blur-sm">
@@ -12,19 +34,35 @@ export default function Login({ onPathChange }: { onPathChange: (path: string) =
           <div className="flex gap-3">
             <div>
               <Label htmlFor="firstname">First Name</Label>
-              <Input type="text" className="border-gray-200 bg-white" placeholder="john" id="firstname" />
+              <Input type="text" className="border-gray-200 bg-white" placeholder="john" id="firstname" value={firstname} onChange={(e) => setFirstname(e.target.value)} />
             </div>
             <div>
               <Label htmlFor="lastname">Last Name</Label>
-              <Input type="text" className="border-gray-200 bg-white" placeholder="doe" id="lastname" />
+              <Input type="text" className="border-gray-200 bg-white" placeholder="doe" id="lastname" value={lastname} onChange={(e) => setLastname(e.target.value)} />
             </div>
           </div>
           <Label htmlFor="username">Username</Label>
-          <Input type="text" className="border-gray-200 bg-white" placeholder="johndoe" id="username" />
+          <Input type="text" className="border-gray-200 bg-white" placeholder="johndoe" id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
           <Label htmlFor="password">Password</Label>
-          <Input type="password" className="border-gray-200 bg-white mb-2" placeholder="Create a strong password" id="password" />
+          <Input type={showPassword ? 'text' : `password`} className={`border-gray-200 bg-white ${isPasswordValid() ? 'mb-2' : ''}`} placeholder="Create a strong password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          {!isPasswordValid() ?
+            <p className="text-red-500 mb-2">Password must be at least eight characters long</p> : null}
           <Label htmlFor="cpassword">Confirm Password</Label>
-          <Input type="password" className="border-gray-200 bg-white mb-2" placeholder="Confirm your password" id="cpassword" />
+          <Input type={showPassword ? 'text' : `password`} className={`border-gray-200 bg-white ${isCPasswordValid() ? 'mb-2' : ''}`} placeholder="Confirm your password" id="cpassword" value={cpassword} onChange={(e) => setCPassword(e.target.value)} />
+          {!isCPasswordValid() ? <p className="text-red-500 mb-2">Confirm password does not match the password</p> : null}
+          <div className="flex">
+            <input
+              id="showpassword"
+              type="checkbox"
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 accent-cyan-700 mr-1"
+              checked={showPassword}
+              onChange={() => setShowPassword(!showPassword)}
+            />
+            <Label htmlFor="showpassword" className="translate-y-[-3px]">
+              Show Password
+            </Label>
+          </div>
+
           <Button type="submit">Sign Up</Button>
         </form>
         <p className="text-center">Already have an account? <a href="#" onClick={() => onPathChange("signin")} className="text-cyan-700 hover:text-cyan-900">Sign In</a> </p>

@@ -5,6 +5,7 @@
 import Input from "./components/Input";
 import Button from "./components/Button";
 import Label from "./components/Label";
+import { useState } from "react";
 // import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 // import { DollarSign, Eye, EyeOff } from "lucide-react";
 // import { useToast } from "@/hooks/use-toast";
@@ -136,6 +137,17 @@ import Label from "./components/Label";
 // <input className="border-gray-200 focus:border-blue-500 focus:ring-blue-500" type="password" placeholder="Enter your password" />
 
 export default function Login({ onPathChange }: { onPathChange: (path: string) => void }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const isPasswordValid = () => {
+    if (password.length > 0 && password.length < 8) {
+      return false;
+    }
+    return true;
+  }
+
   return (
     <div className="bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-100 flex flex-col bg-white min-h-screen justify-center items-center">
       <div className="w-max p-10 bg-white/70 shadow-xl rounded-lg backdrop-blur-sm">
@@ -143,16 +155,32 @@ export default function Login({ onPathChange }: { onPathChange: (path: string) =
         <p className="text-center w-full mb-6 text-gray-600 text-sm">Sign in to your account to start tracking your expenses</p>
         <form className="flex flex-col gap-2 mb-3">
           <Label htmlFor="username">Username</Label>
-          <Input type="text" className="border-gray-200 bg-white" placeholder="johndoe" id="username" />
+          <Input type="text" className="border-gray-200 bg-white" placeholder="johndoe" id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+
           <Label htmlFor="password">Password</Label>
-          <Input type="password" className="border-gray-200 bg-white mb-2" placeholder="Enter your password" id="password" />
+          <Input type={showPassword ? 'text' : `password`} className={`border-gray-200 bg-white ${isPasswordValid() ? 'mb-2' : ''}`} placeholder="Enter your password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          {!isPasswordValid() ?
+            <p className="text-red-500 mb-2">Password must be at least eight characters long</p> : null}
+          <div className="flex">
+            <input
+              id="showpassword"
+              type="checkbox"
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 accent-cyan-700 mr-1"
+              checked={showPassword}
+              onChange={() => setShowPassword(!showPassword)}
+            />
+            <Label htmlFor="showpassword" className="translate-y-[-3px]">
+              Show Password
+            </Label>
+          </div>
+
           <div className="flex mb-2">
             <input
               id="remember"
               type="checkbox"
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 accent-cyan-700"
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 accent-cyan-700 mr-1"
             />
-            <Label htmlFor="remember">
+            <Label htmlFor="remember" className="translate-y-[-3px]">
               Remember me
             </Label>
           </div>
