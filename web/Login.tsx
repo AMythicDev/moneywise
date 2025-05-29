@@ -38,6 +38,7 @@ export default function Login({ onPathChange, onUserChange }: { onPathChange: (p
       }
       const body = await response.json();
       setInvalidCreds(false);
+      localStorage.setItem("jwt", body.jwt);
       onUserChange({_id: body._id, firstname: body.firstname, lastname: body.lastname});
       onPathChange("home");
     } finally {

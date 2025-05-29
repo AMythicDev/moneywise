@@ -49,6 +49,7 @@ export default function Signup({ onPathChange, onUserChange  }: { onPathChange: 
       }
       const body = await response.json();
       setEmailUsed(false);
+      localStorage.setItem("jwt", body._id);
       onUserChange({_id: body._id, firstname: body.firstname, lastname: body.lastname});
       onPathChange("home");
     } catch (e) {
