@@ -1,10 +1,12 @@
 import Input from "./components/Input";
 import Button from "./components/Button";
 import Label from "./components/Label";
+import ErrorMessage from "./components/ErrorMessage";
 import { API_URL } from "./consts";
 import { useState } from "react";
+import type { User } from "./types";
 
-export default function Login({ onPathChange }: { onPathChange: (path: string) => void }) {
+export default function Signup({ onPathChange, onUserChange  }: { onPathChange: (path: string) => void, onUserChange: (user: User) => void }) {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
@@ -12,6 +14,7 @@ export default function Login({ onPathChange }: { onPathChange: (path: string) =
   const [cpassword, setCPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [emailUsed, setEmailUsed] = useState(false);
 
   const isPasswordValid = () => {
     if (password.length > 0 && password.length < 8) {
@@ -40,9 +43,16 @@ export default function Login({ onPathChange }: { onPathChange: (path: string) =
         password: password
       }
       const response = await fetch(`${API_URL}/signup`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(user) })
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (response.status == 409) {
+        setEmailUsed(true);
+        return;
       }
+      const body = await response.json();
+      setEmailUsed(false);
+      onUserChange({_id: body._id, firstname: body.firstname, lastname: body.lastname});
+      onPathChange("home");
+    } catch (e) {
+      console.log(typeof e);
     } finally {
       setIsLoading(false);
     }
@@ -66,13 +76,15 @@ export default function Login({ onPathChange }: { onPathChange: (path: string) =
           </div>
           <Label htmlFor="email">Email</Label>
           <Input type="email" className="border-gray-200 bg-white" placeholder="johndoe@email.com" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          {emailUsed ?
+            <ErrorMessage>The email has already been taken</ErrorMessage> : null}
           <Label htmlFor="password">Password</Label>
           <Input type={showPassword ? 'text' : `password`} className={`border-gray-200 bg-white ${isPasswordValid() ? 'mb-2' : ''}`} placeholder="Create a strong password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           {!isPasswordValid() ?
-            <p className="text-red-500 mb-2">Password must be at least eight characters long</p> : null}
+            <ErrorMessage className="mb-2">Password must be at least eight characters long</ErrorMessage> : null}
           <Label htmlFor="cpassword">Confirm Password</Label>
           <Input type={showPassword ? 'text' : `password`} className={`border-gray-200 bg-white ${isCPasswordValid() ? 'mb-2' : ''}`} placeholder="Confirm your password" id="cpassword" value={cpassword} onChange={(e) => setCPassword(e.target.value)} />
-          {!isCPasswordValid() ? <p className="text-red-500 mb-2">Confirm password does not match the password</p> : null}
+          {!isCPasswordValid() ? <ErrorMessage className="mb-2">Confirm password does not match the password</ErrorMessage> : null}
           <div className="flex">
             <input
               id="showpassword"

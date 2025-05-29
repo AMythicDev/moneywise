@@ -1,14 +1,17 @@
 import Input from "./components/Input";
 import Button from "./components/Button";
 import Label from "./components/Label";
+import ErrorMessage from "./components/ErrorMessage";
 import { useState } from "react";
 import { API_URL } from "./consts";
+import type { User } from "./types";
 
-export default function Login({ onPathChange }: { onPathChange: (path: string) => void }) {
+export default function Login({ onPathChange, onUserChange }: { onPathChange: (path: string) => void, onUserChange: (user: User) => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [invalidCreds, setInvalidCreds] = useState(false);
 
   const isPasswordValid = () => {
     if (password.length > 0 && password.length < 8) {
@@ -29,9 +32,14 @@ export default function Login({ onPathChange }: { onPathChange: (path: string) =
         password: password
       }
       const response = await fetch(`${API_URL}/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(user) })
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (response.status == 401) {
+        setInvalidCreds(true);
+        return;
       }
+      const body = await response.json();
+      setInvalidCreds(false);
+      onUserChange({_id: body._id, firstname: body.firstname, lastname: body.lastname});
+      onPathChange("home");
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +57,10 @@ export default function Login({ onPathChange }: { onPathChange: (path: string) =
           <Label htmlFor="password">Password</Label>
           <Input type={showPassword ? 'text' : `password`} className={`border-gray-200 bg-white ${isPasswordValid() ? 'mb-2' : ''}`} placeholder="Enter your password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           {!isPasswordValid() ?
-            <p className="text-red-500 mb-2">Password must be at least eight characters long</p> : null}
+            <ErrorMessage className="mb-2">Password must be at least eight characters long</ErrorMessage> : null}
+          {invalidCreds ?
+            <ErrorMessage>The email/password combinations is not valid</ErrorMessage> : null}
+
           <div className="flex">
             <input
               id="showpassword"
