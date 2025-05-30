@@ -1,12 +1,23 @@
-import { Db, MongoClient } from "mongodb";
+import { Db, MongoClient, ObjectId } from "mongodb";
 
 const connStr = process.env["ATLAS_URI"] || "";
 
 export interface User {
+  _id?: ObjectId,
   firstname?: string,
   lastname?: string,
   email?: string,
   password?: string,
+}
+
+export interface Transaction {
+  _id?: ObjectId | string,
+  user_id: ObjectId,
+  created: Date,
+  description: string,
+  category: string,
+  type: "income" | "expense",
+  amount: number,
 }
 
 export async function connectDB(): Promise<Db> {

@@ -47,7 +47,7 @@ export default function Login({ onPathChange, onUserChange }: { onPathChange: (p
   }
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-100 flex flex-col bg-white min-h-screen justify-center items-center">
+    <div className="bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-100 flex flex-col min-h-screen justify-center items-center">
       <div className="w-max p-10 bg-white/70 shadow-xl rounded-lg backdrop-blur-sm">
         <h1 className="text-2xl font-extrabold text-center mb-2">Welcome Back</h1>
         <p className="text-center w-full mb-6 text-gray-600 text-sm">Sign in to your account to start tracking your expenses</p>
@@ -85,7 +85,7 @@ export default function Login({ onPathChange, onUserChange }: { onPathChange: (p
               Remember me
             </Label>
           </div>
-          <Button type="submit" loading={isLoading}>{isLoading ? 'Signing in...' : 'Sign In'}</Button>
+          <Button type="submit" className="w-full" loading={isLoading}>{isLoading ? 'Signing in...' : 'Sign In'}</Button>
         </form>
         <p className="text-center">Don't have an account? <a href="#" onClick={() => onPathChange("signup")} className="text-cyan-700 hover:text-cyan-900">Sign Up</a> </p>
       </div>

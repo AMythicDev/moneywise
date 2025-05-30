@@ -1,7 +1,7 @@
 import "./config";
 import express from "express";
 import bcrypt from "bcrypt";
-import { connectDB, type User } from "./db.js"
+import { connectDB, type User, type Transaction } from "./db.js"
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
@@ -39,33 +39,71 @@ app.post('/login', express.json(), async (req, res) => {
   if (user != null && await bcrypt.compare(body.password!, user.password)) {
     const token = jwt.sign({ userId: user._id }, JWT_SECRET_KEY, { expiresIn: "7d" });
     res.status(200).json({ jwt: token, _id: user._id, firstname: user.firstname, lastname: user.lastname });
-    console.log(token);
     return;
   }
   res.status(401).send("authentication failed")
 })
 
-app.get("/fetchuser", async (req, res) => {
-  let token = req.query["jwt"];
-  if (token == undefined) {
-    res.status(400).send("malformed fetchuser request");
-    return;
-  }
-  token = token.toString();
-
+function verifyToken(req, res, next) {
+  const token = req.header('Authorization');
+  if (!token) return res.status(401).send("unauthorized request");
   try {
     const decoded = jwt.verify(token, JWT_SECRET_KEY);
-    const userId = decoded.userId;
-    const users = db.collection("users");
-    const user = await users.findOne({ _id: new ObjectId(userId) })
-    res.status(200).json({ jwt: token, _id: user._id, firstname: user.firstname, lastname: user.lastname });
-    return;
+    req.userId = decoded.userId;
+    next();
   } catch (error) {
     res.status(401).send("invalid token");
   }
+};
+
+app.get("/queryuser", verifyToken, async (req, res) => {
+  const token = req.header('Authorization');
+  const users = db.collection("users");
+  const user = await users.findOne({ _id: new ObjectId(req.userId) })
+  if (!user) return res.status(401).send("unauthorized request");
+  return res.status(200).json({ jwt: token, _id: user._id, firstname: user.firstname, lastname: user.lastname });
 })
 
-const PORT = process.env["PORT"] || "";
+app.post("/newtransaction", verifyToken, express.json(), async (req, res) => {
+  const userId = req.userId;
+  const transactions = db.collection("transactions");
+  req.body.user_id = new ObjectId(userId);
+
+  if (!req.body.date)
+    req.body.date = new Date(Date.now());
+  else {
+    req.body.date = new Date(Date.parse(req.body.date));
+    req.body.date.setMonth(req.body.date.getMonth() - 1);
+  }
+
+  const body: Transaction = req.body;
+  const transaction = await transactions.insertOne({ _id: null, ...req.body });
+  body._id = transaction.insertedId.toString();
+  body.user_id = userId;
+  return res.status(200).json(body);
+})
+
+app.get("/transactions", verifyToken, async (req, res) => {
+  const userId = req.userId;
+  const trans = db.collection("transactions");
+  let query = { user_id: new ObjectId(userId) };
+
+  let dateRange = {};
+  if (req.query.dateAfter) {
+    dateRange.$gte = new Date(Date.parse((req.query.dateAfter)));;
+  }
+  if (req.query.dateBefore) {
+    dateRange.$lt = new Date(Date.parse((req.query.dateBefore)));
+  }
+  if (req.query.dateAfter || req.query.dateBefore) query.date = dateRange;
+
+  let cursor = trans.find(query).sort({ "date": 1 });
+  if (req.query.limit) cursor.limit(parseInt(req.query.limit));
+  const transactions = await cursor.toArray();
+  return res.status(200).json(transactions);
+})
+
+const PORT = process.env["PORT"];
 app.listen(PORT, () => {
   console.log(`moneywise server running on port ${PORT}`)
 })

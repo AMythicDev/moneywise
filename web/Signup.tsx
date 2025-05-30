@@ -99,7 +99,7 @@ export default function Signup({ onPathChange, onUserChange  }: { onPathChange: 
             </Label>
           </div>
 
-          <Button loading={isLoading} type="submit">{isLoading ? "Signing up..." : "Sign Up"}</Button>
+          <Button className="w-full" loading={isLoading} type="submit">{isLoading ? "Signing up..." : "Sign Up"}</Button>
         </form>
         <p className="text-center">Already have an account? <a href="#" onClick={() => onPathChange("signin")} className="text-cyan-700 hover:text-cyan-900">Sign In</a> </p>
       </div >
