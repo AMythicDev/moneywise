@@ -14,8 +14,8 @@ interface HomeProps {
 
 function transactionsForMonth(setTransactions) {
   const day = new Date();
-  const dateAfter = `${day.getFullYear()}-${day.getMonth()}-01`
-  const dateBefore = `${day.getFullYear()}-${day.getMonth() + 1}-01`
+  const dateAfter = `${day.getFullYear()}-${day.getMonth() + 1}-01`
+  const dateBefore = `${day.getFullYear()}-${day.getMonth() + 2}-01`
   const jwt = localStorage.getItem("jwt");
   fetch(`${API_URL}/transactions?dateAfter=${dateAfter}&dateBefore=${dateBefore}`, { headers: { "Authorization": jwt } })
     .then((resp) => resp.json())

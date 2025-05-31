@@ -74,7 +74,6 @@ app.post("/newtransaction", verifyToken, express.json(), async (req, res) => {
     req.body.date = new Date(Date.now());
   else {
     req.body.date = new Date(Date.parse(req.body.date));
-    req.body.date.setMonth(req.body.date.getMonth() - 1);
   }
 
   const body: Transaction = req.body;
@@ -90,15 +89,14 @@ app.get("/transactions", verifyToken, async (req, res) => {
   let query = { user_id: new ObjectId(userId) };
 
   let dateRange = {};
-  if (req.query.dateAfter) {
-    dateRange.$gte = new Date(Date.parse((req.query.dateAfter)));;
-  }
-  if (req.query.dateBefore) {
-    dateRange.$lt = new Date(Date.parse((req.query.dateBefore)));
-  }
+  if (req.query.dateAfter) dateRange.$gte = new Date(Date.parse((req.query.dateAfter)));;
+  if (req.query.dateBefore) dateRange.$lt = new Date(Date.parse((req.query.dateBefore)));
   if (req.query.dateAfter || req.query.dateBefore) query.date = dateRange;
 
-  let cursor = trans.find(query).sort({ "date": 1 });
+  if (req.query.type) query.type = req.query.type;
+  if (req.query.category) query.category = req.query.category;
+
+  let cursor = trans.find(query).sort({ "date": -1 });
   if (req.query.limit) cursor.limit(parseInt(req.query.limit));
   const transactions = await cursor.toArray();
   return res.status(200).json(transactions);
@@ -109,7 +107,7 @@ app.delete("/deletetransaction/:transId", verifyToken, async (req, res) => {
   const transId = req.params.transId;
 
   const trans = db.collection("transactions");
-  await trans.deleteOne({_id: new ObjectId(transId)})
+  await trans.deleteOne({ _id: new ObjectId(transId) })
   return res.status(204).send();
 })
 

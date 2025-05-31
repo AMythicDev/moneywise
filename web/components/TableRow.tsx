@@ -45,9 +45,9 @@ export default function TableRow({ last = false, controls = false, id = undefine
   }
 
   return (
-        <div className={`flex justify-around min-h-10 py-1 dark:text-white ${!last ? 'border-b-2 border-gray-200 dark:border-gray-700' : null} + ${props.className}`}>
+    <div className={`flex justify-around min-h-10 py-1 dark:text-white ${!last ? 'border-b-2 border-gray-200 dark:border-gray-700' : null} + ${props.className}`}>
       {controls == false ?
-    <>
+        <>
           <span className="w-[20%] inline-flex items-center">{formatDate(props.date)}</span>
           <span className="w-[40%] inline-flex items-center pr-5">{props.description}</span>
           <span className="w-[20%] inline-flex items-center">{props.category}</span>

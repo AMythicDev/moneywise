@@ -39,7 +39,7 @@ export default function AddTransaction({ isOpen, categories, ...props }) {
   }
 
   return (
-    <Modal isOpen={isOpen} contentLabel="Add Transaction" {...props} className="dark:bg-slate-800 p-7" style={transactionModalStyles}>
+    <Modal isOpen={isOpen} contentLabel="Add Transaction" {...props} className="dark:bg-slate-800 p-7 w-[90%] lg:w-[50%]" style={transactionModalStyles}>
       <div>
         <h1 className="font-bold text-xl mb-3 dark:text-white">Add Transaction</h1>
         <form className="flex flex-col gap-2" onSubmit={submitForm}>
