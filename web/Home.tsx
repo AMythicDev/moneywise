@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Transaction from "./components/Transaction";
 import CategorySpendings from "./components/CategorySpendings";
 import { refetchUser } from "./utils";
+import Base from "./components/Base";
 
 interface HomeProps {
   onPathChange: (path: string) => void,
@@ -34,8 +35,8 @@ export default function Home({ onPathChange, user, setUser }: HomeProps) {
   }, [])
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-100 dark:from-cyan-900 dark:via-teal-900 dark:to-slate-900 min-h-screen">
-      <div className="grid grid-cols-2 lg:grid-cols-4 lg:grid-rows-4 gap-6 p-5 lg:p-16">
+    <Base setUser={setUser} setPath={onPathChange} categories={user.categories}>
+      <div className="grid grid-cols-2 lg:grid-cols-4 lg:grid-rows-4 gap-6 px-5 lg:px-16">
 
         <div className="row-span-4 col-span-2 bg-white dark:bg-slate-800 dark:text-white p-5 rounded-lg shadow-sm">
           <h1 className="text-xl font-bold mb-3 dark:text-white"> Transactions This Month </h1>
@@ -80,8 +81,7 @@ export default function Home({ onPathChange, user, setUser }: HomeProps) {
           categories={user.categories}
         />
       }
-
-    </div>
+    </Base>
   )
 }
 

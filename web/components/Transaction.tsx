@@ -4,15 +4,7 @@ import Input from "./Input";
 import Label from "./Label";
 import Modal from "react-modal";
 import { API_URL } from "../consts";
-
-const transactionModalStyles = {
-  overlay: {
-    backgroundColor: "rgb(0, 0, 0, 0.5)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-}
+import { transactionModalStyles } from "../consts";
 
 function dateToString(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth() + 1 <= 9 && 0}${d.getMonth() + 1}-${d.getDate() <= 9 && 0}${d.getDate()}`

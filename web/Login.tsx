@@ -5,6 +5,7 @@ import ErrorMessage from "./components/ErrorMessage";
 import { useState } from "react";
 import { API_URL } from "./consts";
 import type { User } from "./types";
+import Base from "./components/Base";
 
 export default function Login({ onPathChange, onUserChange }: { onPathChange: (path: string) => void, onUserChange: (user: User) => void }) {
   const [email, setEmail] = useState("");
@@ -47,8 +48,8 @@ export default function Login({ onPathChange, onUserChange }: { onPathChange: (p
   }
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-100 flex flex-col min-h-screen justify-center items-center dark:from-cyan-900 dark:via-teal-900 dark:to-slate-900">
-      <div className="lg:w-max p-10 bg-white/70 shadow-xl dark:bg-slate-800/70 rounded-lg backdrop-blur-sm">
+    <Base className="flex flex-col justify-center items-center">
+      <div className="lg:w-max p-10 bg-white/70 shadow-sm dark:bg-slate-800/70 rounded-lg backdrop-blur-sm">
         <h1 className="text-2xl font-extrabold text-center mb-2 dark:text-white">Welcome Back</h1>
         <p className="text-center w-full mb-6 text-gray-600 text-sm dark:text-gray-400">Sign in to your account to start tracking your expenses</p>
         <form className="flex flex-col gap-2 mb-3" onSubmit={signInUser}>
@@ -74,21 +75,10 @@ export default function Login({ onPathChange, onUserChange }: { onPathChange: (p
               Show Password
             </Label>
           </div>
-
-          <div className="flex mb-2">
-            <input
-              id="remember"
-              type="checkbox"
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 accent-cyan-700 mr-1"
-            />
-            <Label htmlFor="remember" className="translate-y-[-3px]">
-              Remember me
-            </Label>
-          </div>
           <Button type="submit" className="w-full" loading={isLoading}>{isLoading ? 'Signing in...' : 'Sign In'}</Button>
         </form>
-        <p className="text-center text-white">Don't have an account? <a href="#" onClick={() => onPathChange("signup")} className="text-cyan-700 dark:text-teal-500 hover:text-cyan-900 dark:hover:text-teal-300">Sign Up</a> </p>
+        <p className="text-center dark:text-white">Don't have an account? <a href="#" onClick={() => onPathChange("signup")} className="text-cyan-700 dark:text-teal-500 hover:text-cyan-900 dark:hover:text-teal-300">Sign Up</a> </p>
       </div>
-    </div >
+    </Base >
   )
 }

@@ -7,3 +7,17 @@ export async function refetchUser(setUser) {
   setUser(body);
 }
 
+export function setTheme(theme: string) {
+  if (theme == "system") {
+    localStorage.removeItem("theme");
+  } else {
+    localStorage.setItem("theme", theme);
+  }
+  document.documentElement.classList.toggle("dark", localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches),);
+}
+
+export function getTheme() {
+  if (localStorage.getItem("theme") == null) return "system";
+  if (localStorage.getItem("theme") == "light" || localStorage.getItem("theme") == "dark") return localStorage.getItem("theme");
+}
+
