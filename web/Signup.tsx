@@ -6,7 +6,7 @@ import { API_URL } from "./consts";
 import { useState } from "react";
 import type { User } from "./types";
 
-export default function Signup({ onPathChange, onUserChange  }: { onPathChange: (path: string) => void, onUserChange: (user: User) => void }) {
+export default function Signup({ onPathChange, onUserChange }: { onPathChange: (path: string) => void, onUserChange: (user: User) => void }) {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
@@ -50,7 +50,7 @@ export default function Signup({ onPathChange, onUserChange  }: { onPathChange: 
       const body = await response.json();
       setEmailUsed(false);
       localStorage.setItem("jwt", body._id);
-      onUserChange({_id: body._id, firstname: body.firstname, lastname: body.lastname});
+      onUserChange({ _id: body._id, firstname: body.firstname, lastname: body.lastname });
       onPathChange("home");
     } catch (e) {
       console.log(typeof e);
@@ -60,10 +60,10 @@ export default function Signup({ onPathChange, onUserChange  }: { onPathChange: 
   }
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-100 flex flex-col bg-white min-h-screen justify-center items-center">
-      <div className="w-max p-10 bg-white/70 shadow-xl rounded-lg backdrop-blur-sm">
-        <h1 className="text-2xl font-extrabold text-center mb-2">Create your Account</h1>
-        <p className="text-center w-full mb-6 text-gray-600 text-sm">Start your journey to better financial management</p>
+    <div className="bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-100 flex flex-col bg-white min-h-screen justify-center items-center dark:from-cyan-900 dark:via-teal-900 dark:to-slate-900">
+      <div className="lg:w-max p-10 bg-white/70 shadow-xl dark:bg-slate-800/70 rounded-lg backdrop-blur-sm">
+        <h1 className="text-2xl font-extrabold text-center mb-2 dark:text-white">Create your Account</h1>
+        <p className="text-center w-full mb-6 text-gray-600 text-sm dark:text-gray-400">Start your journey to better financial management</p>
         <form className="flex flex-col gap-2 mb-3" onSubmit={signUpUser}>
           <div className="flex gap-3">
             <div>
@@ -101,7 +101,7 @@ export default function Signup({ onPathChange, onUserChange  }: { onPathChange: 
 
           <Button className="w-full" loading={isLoading} type="submit">{isLoading ? "Signing up..." : "Sign Up"}</Button>
         </form>
-        <p className="text-center">Already have an account? <a href="#" onClick={() => onPathChange("signin")} className="text-cyan-700 hover:text-cyan-900">Sign In</a> </p>
+        <p className="text-center dark:text-white">Already have an account? <a href="#" onClick={() => onPathChange("signin")} className="text-cyan-700 hover:text-cyan-900 dark:text-teal-500 dark:hover:text-teal-300">Sign In</a> </p>
       </div >
     </div >
   )

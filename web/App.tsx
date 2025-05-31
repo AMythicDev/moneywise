@@ -3,6 +3,7 @@ import Home from "./Home.tsx";
 import Login from "./Login.tsx";
 import Signup from "./Signup.tsx";
 import { API_URL } from './consts.ts';
+import Transactions from './Transactions.tsx';
 
 function App() {
   const [path, setPath] = useState(null);
@@ -33,6 +34,8 @@ function App() {
     content = <Home onPathChange={(path) => setPath(path)} onUserChange={(u) => setUser(u)} user={user} />
   } else if (path == "signup") {
     content = <Signup onPathChange={(path) => setPath(path)} onUserChange={(u) => setUser(u)} />
+  } else if (path == "transactions") {
+    content = <Transactions user={user} />
   }
 
   return (

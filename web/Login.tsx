@@ -39,7 +39,7 @@ export default function Login({ onPathChange, onUserChange }: { onPathChange: (p
       const body = await response.json();
       setInvalidCreds(false);
       localStorage.setItem("jwt", body.jwt);
-      onUserChange({_id: body._id, firstname: body.firstname, lastname: body.lastname});
+      onUserChange({ _id: body._id, firstname: body.firstname, lastname: body.lastname });
       onPathChange("home");
     } finally {
       setIsLoading(false);
@@ -47,10 +47,10 @@ export default function Login({ onPathChange, onUserChange }: { onPathChange: (p
   }
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-100 flex flex-col min-h-screen justify-center items-center">
-      <div className="w-max p-10 bg-white/70 shadow-xl rounded-lg backdrop-blur-sm">
-        <h1 className="text-2xl font-extrabold text-center mb-2">Welcome Back</h1>
-        <p className="text-center w-full mb-6 text-gray-600 text-sm">Sign in to your account to start tracking your expenses</p>
+    <div className="bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-100 flex flex-col min-h-screen justify-center items-center dark:from-cyan-900 dark:via-teal-900 dark:to-slate-900">
+      <div className="lg:w-max p-10 bg-white/70 shadow-xl dark:bg-slate-800/70 rounded-lg backdrop-blur-sm">
+        <h1 className="text-2xl font-extrabold text-center mb-2 dark:text-white">Welcome Back</h1>
+        <p className="text-center w-full mb-6 text-gray-600 text-sm dark:text-gray-400">Sign in to your account to start tracking your expenses</p>
         <form className="flex flex-col gap-2 mb-3" onSubmit={signInUser}>
           <Label htmlFor="email">Email</Label>
           <Input type="email" className="border-gray-200 bg-white" placeholder="johndoe@email.com" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -87,7 +87,7 @@ export default function Login({ onPathChange, onUserChange }: { onPathChange: (p
           </div>
           <Button type="submit" className="w-full" loading={isLoading}>{isLoading ? 'Signing in...' : 'Sign In'}</Button>
         </form>
-        <p className="text-center">Don't have an account? <a href="#" onClick={() => onPathChange("signup")} className="text-cyan-700 hover:text-cyan-900">Sign Up</a> </p>
+        <p className="text-center text-white">Don't have an account? <a href="#" onClick={() => onPathChange("signup")} className="text-cyan-700 dark:text-teal-500 hover:text-cyan-900 dark:hover:text-teal-300">Sign Up</a> </p>
       </div>
     </div >
   )

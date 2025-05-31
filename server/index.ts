@@ -1,7 +1,7 @@
 import "./config";
 import express from "express";
 import bcrypt from "bcrypt";
-import { connectDB, type User, type Transaction } from "./db.js"
+import { connectDB, type User, type Transaction, generateDefaultCategories } from "./db.js"
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
@@ -24,6 +24,7 @@ app.post('/signup', express.json(), async (req, res) => {
     res.status(409).send("the user is already present")
     return
   }
+  body.categories = generateDefaultCategories();
   let salt = await bcrypt.genSalt(saltRounds)
   body.password = await bcrypt.hash(body.password!, salt)
   let added_user = await users.insertOne(body);
@@ -61,7 +62,7 @@ app.get("/queryuser", verifyToken, async (req, res) => {
   const users = db.collection("users");
   const user = await users.findOne({ _id: new ObjectId(req.userId) })
   if (!user) return res.status(401).send("unauthorized request");
-  return res.status(200).json({ jwt: token, _id: user._id, firstname: user.firstname, lastname: user.lastname });
+  return res.status(200).json({ jwt: token, _id: user._id, firstname: user.firstname, lastname: user.lastname, categories: user.categories });
 })
 
 app.post("/newtransaction", verifyToken, express.json(), async (req, res) => {
@@ -101,6 +102,15 @@ app.get("/transactions", verifyToken, async (req, res) => {
   if (req.query.limit) cursor.limit(parseInt(req.query.limit));
   const transactions = await cursor.toArray();
   return res.status(200).json(transactions);
+})
+
+app.delete("/deletetransaction/:transId", verifyToken, async (req, res) => {
+  const userId = req.userId;
+  const transId = req.params.transId;
+
+  const trans = db.collection("transactions");
+  await trans.deleteOne({_id: new ObjectId(transId)})
+  return res.status(204).send();
 })
 
 const PORT = process.env["PORT"];
