@@ -5,6 +5,7 @@ import { connectDB, type User, type Transaction, generateDefaultCategories } fro
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
+import randomColor from "randomcolor";
 
 const db = await connectDB();
 const saltRounds = 13;
@@ -39,7 +40,7 @@ app.post('/login', express.json(), async (req, res) => {
   const user = await users.findOne({ email: body.email })
   if (user != null && await bcrypt.compare(body.password!, user.password)) {
     const token = jwt.sign({ userId: user._id }, JWT_SECRET_KEY, { expiresIn: "7d" });
-    res.status(200).json({ jwt: token, _id: user._id, firstname: user.firstname, lastname: user.lastname });
+    res.status(200).json({ jwt: token, _id: user._id, firstname: user.firstname, lastname: user.lastname, categories: user.categories });
     return;
   }
   res.status(401).send("authentication failed")
@@ -103,13 +104,44 @@ app.get("/transactions", verifyToken, async (req, res) => {
 })
 
 app.delete("/deletetransaction/:transId", verifyToken, async (req, res) => {
-  const userId = req.userId;
   const transId = req.params.transId;
 
   const trans = db.collection("transactions");
   await trans.deleteOne({ _id: new ObjectId(transId) })
   return res.status(204).send();
 })
+
+app.put("/updatetransaction/:transId", verifyToken, express.json(), async (req, res) => {
+  const userId = req.userId;
+  const transId = req.params.transId;
+  const trans = db.collection("transactions");
+  req.body.date = new Date(req.body.date);
+  req.body.user_id = new ObjectId(userId);
+  await trans.replaceOne({ _id: new ObjectId(transId) }, req.body);
+  return res.status(200).json({ _id: transId, ...req.body });
+})
+
+app.post("/createcategory", verifyToken, express.json(), async (req, res) => {
+  const userId = req.userId;
+  const users = db.collection("users");
+  const category = await users.findOne({ _id: new ObjectId(userId), "categories.name": req.body.name, "categories.type": req.body.type }, { projection: { _id: 1 } });
+  if (!category) {
+    const item = { name: req.body.name, type: req.body.type, color: randomColor() }
+    await users.updateOne({ _id: new ObjectId(userId) }, { $push: { "categories": item } })
+    return res.status(200).json(item);
+  }
+  return res.status(409).send("category already exists");
+})
+
+app.delete("/deletecategory/:type/:name", verifyToken, express.json(), async (req, res) => {
+  const userId = req.userId;
+  const users = db.collection("users");
+  const type = req.params.type;
+  const name = req.params.name;
+  await users.updateOne({ _id: new ObjectId(userId), "categories.name": name, "categories.type": type }, { $pull: { categories: { name: name, type: type } } })
+  return res.status(204).send();
+})
+
 
 const PORT = process.env["PORT"];
 app.listen(PORT, () => {

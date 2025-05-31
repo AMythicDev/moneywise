@@ -31,11 +31,11 @@ function App() {
   if (path == "signin") {
     content = <Login onPathChange={(path) => setPath(path)} onUserChange={(user) => setUser(user)} />
   } else if (path == "home") {
-    content = <Home onPathChange={(path) => setPath(path)} onUserChange={(u) => setUser(u)} user={user} />
+    content = <Home onPathChange={(path) => setPath(path)} setUser={setUser} user={user} />
   } else if (path == "signup") {
     content = <Signup onPathChange={(path) => setPath(path)} onUserChange={(u) => setUser(u)} />
   } else if (path == "transactions") {
-    content = <Transactions user={user} />
+    content = <Transactions user={user} setUser={setUser} />
   }
 
   return (

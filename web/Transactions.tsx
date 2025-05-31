@@ -1,18 +1,19 @@
 import { API_URL } from "./consts";
 import { useEffect, useState } from "react";
-import AddTransaction from "./components/AddTransaction";
+import Transaction from "./components/Transaction";
 import Button from "./components/Button";
 import TableRow from "./components/TableRow";
 import Input from "./components/Input";
 import Label from "./components/Label";
+import { refetchUser } from "./utils";
 
 function getTransactions(category: string, type: string, startDate: string | null, endDate: string | null, setTransactions) {
   const day = new Date();
   const url = new URL(`${API_URL}/transactions/`)
   if (category != "all") url.searchParams.append("category", category);
   if (type != "all") url.searchParams.append("type", type);
-  if (startDate) url.searchParams.append("dateAfter", startDate); 
-  if (endDate) url.searchParams.append("dateBefore", endDate); 
+  if (startDate) url.searchParams.append("dateAfter", startDate);
+  if (endDate) url.searchParams.append("dateBefore", endDate);
 
   const jwt = localStorage.getItem("jwt");
   fetch(url.toString(), { headers: { "Authorization": jwt } })
@@ -22,14 +23,15 @@ function getTransactions(category: string, type: string, startDate: string | nul
     });
 }
 
-export default function Transactions({ user }) {
+export default function Transactions({ user, setUser }) {
   const [category, setCategory] = useState("all");
   const [type, setType] = useState("all");
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState(undefined);
+  const [endDate, setEndDate] = useState(undefined);
 
   const [transactions, setTransactions] = useState(null);
   const [transactionModalOpem, setTransactionModalOpen] = useState(false);
+  const [updateTransactionRecord, setUpdateTransactionRecord] = useState(null);
 
   const refetch = () => getTransactions(category, type, startDate, endDate, setTransactions);
   const resetFilters = () => {
@@ -38,7 +40,13 @@ export default function Transactions({ user }) {
     setStartDate(null);
     setEndDate(null);
   }
-  useEffect(() => refetch, [])
+  const closeTranssactionModal = () => {
+    setTransactionModalOpen(false);
+    setUpdateTransactionRecord(null);
+  }
+
+  useEffect(() => refetch, []);
+  useEffect(() => updateTransactionRecord ? setTransactionModalOpen(true) : setTransactionModalOpen(false), [updateTransactionRecord]);
 
   return (
     <div className="bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-100 min-h-screen p-5 dark:from-cyan-900 dark:via-teal-900 dark:to-slate-900 flex flex-col gap-4">
@@ -90,13 +98,21 @@ export default function Transactions({ user }) {
         <TableRow className="text-sm text-gray-500" date="Date" description="Description" category="Category" controls amount="Amount" type="header" />
         {transactions &&
           transactions.map((t) => {
-            return (<TableRow className="!h-12" key={t._id} id={t._id} setDeletionId={(id: string) => setDeleteTransactionId(id)} controls {...t} date={new Date(t.date)} />);
+            return (<TableRow className="!h-12" key={t._id} id={t._id} setUpdateTransactionRecord={setUpdateTransactionRecord} controls {...t} date={new Date(t.date)} />);
           })}
       </div>
       <div className="fixed bottom-8 left-0 flex justify-center w-full">
         <Button className="px-3" onClick={(_) => setTransactionModalOpen(true)}> <span className="mr-2">+</span>Add Transaction</Button>
       </div>
-      <AddTransaction isOpen={transactionModalOpem} onRequestClose={() => setTransactionModalOpen(false)} categories={user.categories} />
+      {transactionModalOpem &&
+        <Transaction
+          setIsOpen={setTransactionModalOpen}
+          refetchTransactions={refetch}
+          refetchUser={() => refetchUser(setUser)}
+          updateTransaction={updateTransactionRecord}
+          onRequestClose={closeTranssactionModal}
+          categories={user.categories} />
+      }
     </div>
   );
 }

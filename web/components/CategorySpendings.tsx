@@ -5,7 +5,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function CategorySpendings({ transactions, categories }) {
   const expense_cats = categories.filter((c) => c.type == "expense");
-  let data = { labels: [], datasets: [{ label: 'Spent', data: [], backgroundColor: [], borderColor: [], borderWidth: 1 }] };
+  let data = { labels: ["Uncategorized"], datasets: [{ label: 'Spent', data: [0], backgroundColor: ["#cfccccbb"], borderColor: ["#cfcccc"], borderWidth: 1 }] };
 
   for (const cat of expense_cats) {
     data.labels.push(cat.name);
@@ -14,8 +14,12 @@ export default function CategorySpendings({ transactions, categories }) {
     data.datasets[0].data.push(0);
   }
   for (const trs of transactions) {
-    const index = data.labels.indexOf(trs.category);
-    data.datasets[0].data[index] += trs.amount;
+    if (trs.category) {
+      const index = data.labels.indexOf(trs.category) // + 1 to account for the Uncategorized label;
+      data.datasets[0].data[index] += trs.amount;
+    } else {
+      data.datasets[0].data[0] += trs.amount;
+    }
   }
 
   return <Doughnut data={data}
