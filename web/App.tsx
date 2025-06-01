@@ -35,7 +35,7 @@ function App() {
   } else if (path == "signup") {
     content = <Signup onPathChange={(path) => setPath(path)} onUserChange={(u) => setUser(u)} />
   } else if (path == "transactions") {
-    content = <Transactions user={user} setUser={setUser} />
+    content = <Transactions user={user} setUser={setUser} setPath={setPath} />
   }
 
   return (

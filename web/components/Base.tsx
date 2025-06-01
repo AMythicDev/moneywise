@@ -4,7 +4,7 @@ import { useState, type ComponentPropsWithoutRef } from "react"
 
 type BaseProps = ComponentPropsWithoutRef<"div">
 
-export default function Base({ children, className = null, setPath, setUser = null, categories = null, }: BaseProps) {
+export default function Base({ children, className = null, setPath, setUser = null, refetchTransactions = null, categories = null, }: BaseProps) {
   const [sidebarWidth, setSidebarWidth] = useState('0');
 
   const toggleSidebar = () => {
@@ -20,7 +20,7 @@ export default function Base({ children, className = null, setPath, setUser = nu
         <Hamburger />
         <span className="text-black dark:text-white inline-block leading-8">{sidebarWidth == '0' ? 'Menu' : 'Close'}</span>
       </button>
-      <Sidebar width={sidebarWidth} setPath={setPath} setUser={setUser} categories={categories} />
+      <Sidebar width={sidebarWidth} setPath={setPath} setUser={setUser} categories={categories} refetchTransactions={refetchTransactions} />
       <div className={`min-h-screen ${className} pt-18`} onClick={closeSidebar}>
         {children}
       </div>

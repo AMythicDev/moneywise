@@ -35,7 +35,7 @@ export default function Home({ onPathChange, user, setUser }: HomeProps) {
   }, [])
 
   return (
-    <Base setUser={setUser} setPath={onPathChange} categories={user.categories}>
+    <Base setUser={setUser} setPath={onPathChange} categories={user.categories} refetchTransactions={() => transactionsForMonth(setTransactions)} >
       <div className="grid grid-cols-2 lg:grid-cols-4 lg:grid-rows-4 gap-6 px-5 lg:px-16">
 
         <div className="row-span-4 col-span-2 bg-white dark:bg-slate-800 dark:text-white p-5 rounded-lg shadow-sm">
@@ -72,7 +72,8 @@ export default function Home({ onPathChange, user, setUser }: HomeProps) {
       <div className="fixed bottom-8 left-0 flex justify-center w-full">
         <Button className="px-3" onClick={(_) => setTransactionModalOpen(true)}> <span className="mr-2">+</span>Add Transaction</Button>
       </div>
-      {transactionModalOpem &&
+      {
+        transactionModalOpem &&
         <Transaction
           setIsOpen={setTransactionModalOpen}
           refetchTransactions={() => transactionsForMonth(setTransactions)}
@@ -81,7 +82,7 @@ export default function Home({ onPathChange, user, setUser }: HomeProps) {
           categories={user.categories}
         />
       }
-    </Base>
+    </Base >
   )
 }
 

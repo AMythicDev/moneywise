@@ -8,7 +8,7 @@ import Label from "./components/Label";
 import Base from "./components/Base";
 import { refetchUser } from "./utils";
 
-function getTransactions(category: string, type: string, startDate: string | null, endDate: string | null, setTransactions) {
+function getTransactions(category: string, type: string, startDate?: string, endDate?: string, setTransactions) {
   const url = new URL(`${API_URL}/transactions/`)
   if (category != "all") url.searchParams.append("category", category);
   if (type != "all") url.searchParams.append("type", type);
@@ -23,7 +23,7 @@ function getTransactions(category: string, type: string, startDate: string | nul
     });
 }
 
-export default function Transactions({ user, setUser }) {
+export default function Transactions({ user, setUser, setPath, }) {
   const [category, setCategory] = useState("all");
   const [type, setType] = useState("all");
   const [startDate, setStartDate] = useState(undefined);
@@ -49,7 +49,7 @@ export default function Transactions({ user, setUser }) {
   useEffect(() => updateTransactionRecord ? setTransactionModalOpen(true) : setTransactionModalOpen(false), [updateTransactionRecord]);
 
   return (
-    <Base className="min-h-screen p-5 flex flex-col gap-4">
+    <Base className="min-h-screen p-5 flex flex-col gap-4" setUser={setUser} setPath={setPath} categories={user.categories} refetchTransactions={refetch}>
       <div className="bg-white p-5 rounded-lg shadow-sm dark:bg-slate-800">
         <h1 className="text-xl font-bold mb-2 dark:text-white"> Filters </h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm mb-5">Filter and search your transactions</p>

@@ -133,13 +133,36 @@ app.post("/createcategory", verifyToken, express.json(), async (req, res) => {
   return res.status(409).send("category already exists");
 })
 
-app.delete("/deletecategory/:type/:name", verifyToken, express.json(), async (req, res) => {
-  const userId = req.userId;
+app.delete("/deletecategory/:type/:name", verifyToken, async (req, res) => {
+  const userId = new ObjectId(req.userId);
   const users = db.collection("users");
+  const trans = db.collection("transactions");
   const type = req.params.type;
   const name = req.params.name;
-  await users.updateOne({ _id: new ObjectId(userId), "categories.name": name, "categories.type": type }, { $pull: { categories: { name: name, type: type } } })
+  await users.updateOne({ _id: userId, "categories.name": name, "categories.type": type }, { $pull: { categories: { name: name, type: type } } })
+  await trans.updateMany({ user_id: userId, }, { $unset: { "category": "" } })
   return res.status(204).send();
+})
+
+app.put("/updatecategory/:type/:name", verifyToken, express.json(), async (req, res) => {
+  const userId = new ObjectId(req.userId);
+  const users = db.collection("users");
+  const trans = db.collection("transactions");
+
+  const type = req.params.type;
+  const name = req.params.name;
+
+  await users.updateOne(
+    {
+      _id: userId,
+      categories: { $elemMatch: { name: name, type: type } },
+    },
+    {
+      $set: { "categories.$.name": req.body.name, "categories.$.type": req.body.type }
+    }
+  );
+  await trans.updateMany({ user_id: userId, category: name, type: type }, { $set: { "category": req.body.name } })
+  return res.status(200).send();
 })
 
 
