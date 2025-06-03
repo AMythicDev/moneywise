@@ -10,12 +10,12 @@ function formatDate(d: Date | string): string {
 export default function DeleteTransaction({ deleteTransactionRecord, setDeleteTransactionRecord, refetch, ...props }) {
   const deleteTransaction = async () => {
     const jwt = localStorage.getItem("jwt");
-    await fetch(`${API_URL}/deletetransaction/${deleteTransactionRecord._id}`, {method: "DELETE", headers: {Authorization: jwt}});
+    await fetch(`${API_URL}/deletetransaction/${deleteTransactionRecord._id}`, { method: "DELETE", headers: { Authorization: jwt } });
     await refetch();
     setDeleteTransactionRecord(null);
   }
   return (
-    <Modal isOpen={true} style={transactionModalStyles} onRequestClose={() => setDeleteTransactionRecord(null)} contentLabel="Delete Transaction" className="dark:bg-slate-800 p-7 w-[90%] lg:w-[50%]" {...props}>
+    <Modal isOpen={true} style={transactionModalStyles} onRequestClose={() => setDeleteTransactionRecord(null)} contentLabel="Delete Transaction" className="dark:bg-slate-800 p-7 w-[90%] lg:w-[50%] dark:text-white" {...props}>
       <h1 className="font-bold text-xl mb-3">Delete Transaction</h1>
       <p className="mb-4">Once deleted, this transaction will not be shown</p>
       <div>

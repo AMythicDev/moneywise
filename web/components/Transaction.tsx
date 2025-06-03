@@ -57,9 +57,9 @@ export default function Transaction({ setIsOpen, refetchTransactions, categories
   }
 
   return (
-    <Modal isOpen={true} contentLabel="Add Transaction" {...props} className="bg-white dark:bg-slate-800 p-7 w-[90%] lg:w-[50%]" style={transactionModalStyles}>
+    <Modal isOpen={true} contentLabel="Add Transaction" {...props} className="bg-white dark:text-white dark:bg-slate-800 p-7 w-[90%] lg:w-[50%]" style={transactionModalStyles}>
       <div>
-        <h1 className="font-bold text-xl mb-3">Add Transaction</h1>
+        <h1 className="font-bold text-xl mb-3">{updateTransaction ? "Update Transaction" : "Add Transaction"}</h1>
         <form className="flex flex-col gap-3" onSubmit={submitForm}>
           <Label htmlFor="description">Description</Label>
           <Input type="text" placeholder="Dinner with friends" id="description" value={description} onChange={(e) => setDescription(e.target.value)} />

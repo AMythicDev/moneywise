@@ -56,7 +56,7 @@ export default function Transactions({ user }) {
 
   return (
     <Base className="min-h-screen p-5 flex flex-col gap-4" categories={user.categories} refetchTransactions={refetch}>
-      <button className="w-max py-2 px-5 border-2 border-gray-400 mb-3 bg-black/20" onClick={() => setPath("home")}>Go Back</button>
+      <button className="w-max py-2 px-5 border-2 border-gray-400 mb-3 bg-black/10" onClick={() => setPath("home")}>Go Back</button>
       <div className="bg-white p-5 rounded-lg shadow-sm dark:bg-slate-800">
         <h1 className="text-xl font-bold mb-2 "> Filters </h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm mb-5">Filter and search your transactions</p>
@@ -105,13 +105,13 @@ export default function Transactions({ user }) {
         <TableRow className="text-sm text-gray-500" date="Date" description="Description" category="Category" controls amount="Amount" type="header" />
         {transactions &&
           transactions.map((t) => {
-            return (<TableRow className="!h-12" key={t._id} id={t._id} setDeleteTransactionRecord={setDeleteTransactionRecord} setUpdateTransactionRecord={setUpdateTransactionRecord} controls {...t} date={new Date(t.date)} />);
+            return (<TableRow className="!h-12" key={t._id} setDeleteTransactionRecord={setDeleteTransactionRecord} setUpdateTransactionRecord={setUpdateTransactionRecord} controls {...t} date={new Date(t.date)} />);
           })}
       </div>
       <div className="fixed bottom-8 left-0 flex justify-center w-full">
         <Button className="px-3" onClick={(_) => setTransactionModalOpen(true)}> <span className="mr-2">+</span>Add Transaction</Button>
       </div>
-      {deleteTransactionRecord && <DeleteTransaction refetch={refetch} setDeleteTransactionRecord={setDeleteTransactionRecord} deleteTransactionRecord={deleteTransactionRecord}  />}
+      {deleteTransactionRecord && <DeleteTransaction refetch={refetch} setDeleteTransactionRecord={setDeleteTransactionRecord} deleteTransactionRecord={deleteTransactionRecord} />}
       {transactionModalOpem &&
         <Transaction
           setIsOpen={setTransactionModalOpen}

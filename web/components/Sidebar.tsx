@@ -38,7 +38,7 @@ export default function({ width, categories = null, refetchTransactions = null }
   }
 
   return (
-    <div className="fixed top-0 left-0 min-h-screen bg-teal-100 dark:bg-cyan-950 transition-[width] overflow-x-hidden z-[1]" style={{ width: width }}>
+    <div className="fixed top-0 left-0 min-h-screen bg-teal-100 dark:bg-cyan-950 transition-[width] overflow-x-hidden z-[1] shadow-2xl" style={{ width: width }}>
       <div className="h-20"></div>
       <div className="px-8 flex flex-col gap-3">
         <div className="flex justify-between">

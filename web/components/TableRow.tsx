@@ -9,7 +9,7 @@ interface TableRowProps {
   last: boolean,
   controls: boolean,
   header: boolean,
-  id?: any,
+  _id: string,
 }
 
 function formatDate(d: Date | string): string {
@@ -17,7 +17,7 @@ function formatDate(d: Date | string): string {
   return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
 }
 
-export default function TableRow({ last = false, controls = false, id = undefined, setDeleteTransactionRecord = undefined, className, setUpdateTransactionRecord = undefined, ...props }: TableRowProps) {
+export default function TableRow({ last = false, controls = false, setDeleteTransactionRecord = undefined, className, setUpdateTransactionRecord = undefined, ...props }: TableRowProps) {
   let amount_color = null;
   let sign = null;
   if (props.type == "expense") {
@@ -46,9 +46,9 @@ export default function TableRow({ last = false, controls = false, id = undefine
           <span className={`w-[10%] justify-end inline-flex items-center mr-10 ${amount_color}`}>{sign}{props.amount}</span>
           {props.type != "header" ? <>
             <button className="w-[5%] border-2 rounded-lg border-teal-500 hover:text-white hover:bg-teal-500 transition-colors" onClick={() =>
-              setUpdateTransactionRecord({ ...props, _id: id, })
+              setUpdateTransactionRecord({ ...props })
             }>Edit</button>
-            <button className="w-[5%] border-2 rounded-lg border-red-400 hover:text-white hover:bg-red-400 transition-colors" onClick={() => setDeleteTransactionRecord({ ...props, _id: id })}>Delete</button>
+            <button className="w-[5%] border-2 rounded-lg border-red-400 hover:text-white hover:bg-red-400 transition-colors" onClick={() => setDeleteTransactionRecord({ ...props })}>Delete</button>
           </> : <>
             <span className="w-[5%] pr-2.5"></span>
             <span className="w-[5%]"></span>
