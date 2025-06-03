@@ -42,8 +42,8 @@ export default function({ width, categories = null, refetchTransactions = null }
       <div className="h-20"></div>
       <div className="px-8 flex flex-col gap-3">
         <div className="flex justify-between">
-          <span className="dark:text-white block leading-10">UI Theme</span>
-          <select name="theme" className="dark:text-white border dark:border-white border-black py-0.5 px-5 bg-white/80 dark:bg-black/20" value={theme} onChange={(e) => setTheme(e.target.value)}>
+          <span className="block leading-10">UI Theme</span>
+          <select name="theme" className="border dark:border-white border-black py-0.5 px-5 bg-white/80 dark:bg-black/20" value={theme} onChange={(e) => setTheme(e.target.value)}>
             <option value="system">System</option>
             <option value="light">Light</option>
             <option value="dark">Dark</option>
@@ -52,7 +52,7 @@ export default function({ width, categories = null, refetchTransactions = null }
         {categories &&
           <>
             <p className="text-sm text-gray-600 dark:text-gray-400 border-b border-gray-600 py-2">Categories</p>
-            <ul className="dark:text-white h-[calc(100vh-16rem)]">
+            <ul className="h-[calc(100vh-16rem)]">
               {categories.map((c) =>
                 <li key={c.name}>
                   <div className="py-1 flex justify-between">
@@ -70,7 +70,7 @@ export default function({ width, categories = null, refetchTransactions = null }
                       <h1 className="font-bold mb-3">Edit Category</h1>
                       <Input type="text" value={newEditCategory.name} onChange={(e) => setNewEditCategory({ name: e.target.value, type: editCategory.type })} />
                       <div className="mt-1">
-                        <span className="mr-8 dark:text-white">Type</span>
+                        <span className="mr-8">Type</span>
                         <input type="radio" name="type" id="expense" value="Expense" className="checked:accent-red-300" checked={newEditCategory.type == "expense"} onChange={() => setNewEditCategory({ name: editCategory.name, type: "expense" })} />
                         <Label htmlFor="expense" className="mr-4 text-red-400">Expense</Label>
                         <input type="radio" name="type" id="income" value="Income" className="checked:accent-teal-500" checked={newEditCategory.type == "income"} onChange={() => setNewEditCategory({ name: editCategory.name, type: "income" })} />

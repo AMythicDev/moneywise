@@ -53,7 +53,7 @@ export default function Login() {
   return (
     <Base className="flex flex-col justify-center items-center">
       <div className="lg:w-max p-10 bg-white/70 shadow-sm dark:bg-slate-800/70 rounded-lg backdrop-blur-sm">
-        <h1 className="text-2xl font-extrabold text-center mb-2 dark:text-white">Welcome Back</h1>
+        <h1 className="text-2xl font-extrabold text-center mb-2">Welcome Back</h1>
         <p className="text-center w-full mb-6 text-gray-600 text-sm dark:text-gray-400">Sign in to your account to start tracking your expenses</p>
         <form className="flex flex-col gap-2 mb-3" onSubmit={signInUser}>
           <Label htmlFor="email">Email</Label>
@@ -80,7 +80,7 @@ export default function Login() {
           </div>
           <Button type="submit" className="w-full" loading={isLoading}>{isLoading ? 'Signing in...' : 'Sign In'}</Button>
         </form>
-        <p className="text-center dark:text-white">Don't have an account? <a href="#" onClick={() => setPath("signup")} className="text-cyan-700 dark:text-teal-500 hover:text-cyan-900 dark:hover:text-teal-300">Sign Up</a> </p>
+        <p className="text-center">Don't have an account? <a href="#" onClick={() => setPath("signup")} className="text-cyan-700 dark:text-teal-500 hover:text-cyan-900 dark:hover:text-teal-300">Sign Up</a> </p>
       </div>
     </Base >
   )

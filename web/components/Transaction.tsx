@@ -59,12 +59,12 @@ export default function Transaction({ setIsOpen, refetchTransactions, categories
   return (
     <Modal isOpen={true} contentLabel="Add Transaction" {...props} className="bg-white dark:bg-slate-800 p-7 w-[90%] lg:w-[50%]" style={transactionModalStyles}>
       <div>
-        <h1 className="font-bold text-xl mb-3 dark:text-white">Add Transaction</h1>
+        <h1 className="font-bold text-xl mb-3">Add Transaction</h1>
         <form className="flex flex-col gap-3" onSubmit={submitForm}>
           <Label htmlFor="description">Description</Label>
           <Input type="text" placeholder="Dinner with friends" id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
           <div className="mt-1">
-            <span className="mr-8 dark:text-white">Type</span>
+            <span className="mr-8">Type</span>
             <input type="radio" name="type" id="expense" value="Expense" className="checked:accent-red-300" checked={type == "expense"} onChange={() => setType("expense")} />
             <Label htmlFor="expense" className="mr-4 text-red-400">Expense</Label>
             <input type="radio" name="type" id="income" value="Income" className="checked:accent-teal-500" checked={type == "income"} onChange={() => setType("income")} />
@@ -88,7 +88,7 @@ export default function Transaction({ setIsOpen, refetchTransactions, categories
 
           <div>
             <Label htmlFor="recurring" className="mr-4">Recurring</Label>
-            <select name="recurring" value={recurring} onChange={(e) => setRecurring(e.target.value)} id="recurring" className="border-gray-400 border py-1 px-3 dark:text-white">
+            <select name="recurring" value={recurring} onChange={(e) => setRecurring(e.target.value)} id="recurring" className="border-gray-400 border py-1 px-3">
               <option value="Never">Never</option>
               <option value="Daily">Daily</option>
               <option value="Monthly">Monthly</option>

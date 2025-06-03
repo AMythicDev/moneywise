@@ -14,7 +14,7 @@ export default function DeleteCategory({ name, type, setDeleteCategory }: { name
 
   return (
     <Modal isOpen={true} onRequestClose={() => setDeleteCategory(null)} className="dark:bg-slate-800 p-7 w-[90%] lg:w-[50%]" style={transactionModalStyles}>
-      <h1 className="dark:text-white font-bold text-lg mb-3">Delete Category</h1>
+      <h1 className="font-bold text-lg mb-3">Delete Category</h1>
       <p className="text-white">Are you sure you want to remove the <b>{name}</b> category of type <b>{type}</b>.</p>
       <p className="text-white mt-3">It will be removed from all existing transactions.</p>
       <div className="flex justify-between w-full mt-5">

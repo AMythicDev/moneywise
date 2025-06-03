@@ -40,10 +40,10 @@ export default function Home({ user }: HomeProps) {
     <Base setUser={setUser} categories={user.categories} refetchTransactions={() => transactionsForMonth(setTransactions)} className="pb-7">
       <div className="grid grid-cols-2 lg:grid-cols-4 lg:grid-rows-4 gap-6 px-5 lg:px-16">
 
-        <div className="row-span-4 col-span-2 bg-white dark:bg-slate-800 dark:text-white p-5 rounded-lg shadow-sm">
-          <h1 className="text-xl font-bold mb-3 dark:text-white"> Transactions This Month </h1>
+        <div className="row-span-4 col-span-2 bg-white dark:bg-slate-800 p-5 rounded-lg shadow-sm">
+          <h1 className="text-xl font-bold mb-3">Transactions This Month </h1>
           <div className="min-h-96 mb-3">
-            <TableRow className="text-sm text-gray-500" date="Date" description="Description" category="Category" amount="Amount" recurring="Recurring" />
+            <TableRow className="text-sm text-gray-500" date="Date" description="Description" category="Category" amount="Amount" recurring="Recurring" type="header" />
             {transactions && transactions.map((t) => <TableRow key={t._id} {...t} date={new Date(t.date)} />)}
           </div>
           <div className="flex justify-center">
@@ -62,7 +62,7 @@ export default function Home({ user }: HomeProps) {
         </div>
 
         <div className="col-span-2 row-span-3 flex flex-col bg-white dark:bg-slate-800 rounded-lg shadow-sm py-5 pl-10">
-          <h1 className="text-xl font-bold mb-1 dark:text-white">Spending By Category</h1>
+          <h1 className="text-xl font-bold mb-1">Spending By Category</h1>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">This month's expense breakdown</p>
           <div className="flex-grow">
             {transactions && <CategorySpendings categories={user.categories} transactions={transactions} />}
@@ -70,7 +70,7 @@ export default function Home({ user }: HomeProps) {
         </div>
       </div>
       <div className="bg-white dark:bg-slate-800 mt-5 lg:mx-16 px-5 lg:px-16 py-5 h-[]">
-        <h1 className="text-xl font-bold mb-1 dark:text-white">Weekly Overview</h1>
+        <h1 className="text-xl font-bold mb-1">Weekly Overview</h1>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Your income and expenses over the last 7 days</p>
         {transactions && <WeeklyGraph transactions={transactions} />}
       </div>

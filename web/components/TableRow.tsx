@@ -45,10 +45,10 @@ export default function TableRow({ last = false, controls = false, id = undefine
           <span className="w-[5%] inline-flex items-center">{props.recurring ?? "Never"}</span>
           <span className={`w-[10%] justify-end inline-flex items-center mr-10 ${amount_color}`}>{sign}{props.amount}</span>
           {props.type != "header" ? <>
-                <button className="w-[5%] border-2 rounded-lg border-teal-500 hover:text-white hover:bg-teal-500 transition-colors" onClick={() =>
-                  setUpdateTransactionRecord({ ...props, _id: id, })
-                }>Edit</button>
-                <button className="w-[5%] border-2 rounded-lg border-red-400 hover:text-white hover:bg-red-400 transition-colors" onClick={() => setDeleteTransactionRecord({...props, _id: id})}>Delete</button>
+            <button className="w-[5%] border-2 rounded-lg border-teal-500 hover:text-white hover:bg-teal-500 transition-colors" onClick={() =>
+              setUpdateTransactionRecord({ ...props, _id: id, })
+            }>Edit</button>
+            <button className="w-[5%] border-2 rounded-lg border-red-400 hover:text-white hover:bg-red-400 transition-colors" onClick={() => setDeleteTransactionRecord({ ...props, _id: id })}>Delete</button>
           </> : <>
             <span className="w-[5%] pr-2.5"></span>
             <span className="w-[5%]"></span>

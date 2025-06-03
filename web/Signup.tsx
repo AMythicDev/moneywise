@@ -4,7 +4,6 @@ import Label from "./components/Label";
 import ErrorMessage from "./components/ErrorMessage";
 import { API_URL } from "./consts";
 import { useContext, useState } from "react";
-import type { User } from "./types";
 import Base from "./components/Base";
 import { SetInitialContext } from "./contexts";
 
@@ -66,7 +65,7 @@ export default function Signup() {
   return (
     <Base className="flex flex-col justify-center items-center">
       <div className="lg:w-max p-10 bg-white/70 shadow-sm dark:bg-slate-800/70 rounded-lg backdrop-blur-sm">
-        <h1 className="text-2xl font-extrabold text-center mb-2 dark:text-white">Create your Account</h1>
+        <h1 className="text-2xl font-extrabold text-center mb-2 ">Create your Account</h1>
         <p className="text-center w-full mb-6 text-gray-600 text-sm dark:text-gray-400">Start your journey to better financial management</p>
         <form className="flex flex-col gap-2 mb-3" onSubmit={signUpUser}>
           <div className="flex gap-3">
@@ -105,7 +104,7 @@ export default function Signup() {
 
           <Button className="w-full" loading={isLoading} type="submit">{isLoading ? "Signing up..." : "Sign Up"}</Button>
         </form>
-        <p className="text-center dark:text-white">Already have an account? <a href="#" onClick={() => setPath("signin")} className="text-cyan-700 hover:text-cyan-900 dark:text-teal-500 dark:hover:text-teal-300">Sign In</a> </p>
+        <p className="text-center ">Already have an account? <a href="#" onClick={() => setPath("signin")} className="text-cyan-700 hover:text-cyan-900 dark:text-teal-500 dark:hover:text-teal-300">Sign In</a> </p>
       </div >
     </Base >
   )

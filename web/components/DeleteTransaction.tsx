@@ -15,7 +15,7 @@ export default function DeleteTransaction({ deleteTransactionRecord, setDeleteTr
     setDeleteTransactionRecord(null);
   }
   return (
-    <Modal isOpen={true} style={transactionModalStyles} onRequestClose={() => setDeleteTransactionRecord(null)} contentLabel="Delete Transaction" className="dark:bg-slate-800 p-7 w-[90%] lg:w-[50%] dark:text-white" {...props}>
+    <Modal isOpen={true} style={transactionModalStyles} onRequestClose={() => setDeleteTransactionRecord(null)} contentLabel="Delete Transaction" className="dark:bg-slate-800 p-7 w-[90%] lg:w-[50%]" {...props}>
       <h1 className="font-bold text-xl mb-3">Delete Transaction</h1>
       <p className="mb-4">Once deleted, this transaction will not be shown</p>
       <div>

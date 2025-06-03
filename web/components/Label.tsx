@@ -4,7 +4,7 @@ type LabelProps = ComponentPropsWithoutRef<"label">
 
 export default function Label({ className, ...props }: LabelProps) {
   return (
-    <label className={`text-gray-700 dark:text-white font-medium ${className}`} {...props}> {props.children} </label>
+    <label className={`text-gray-700 dark:text-gray-300 font-medium ${className}`} {...props}> {props.children} </label>
   )
 }
 

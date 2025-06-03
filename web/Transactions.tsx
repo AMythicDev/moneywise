@@ -56,9 +56,9 @@ export default function Transactions({ user }) {
 
   return (
     <Base className="min-h-screen p-5 flex flex-col gap-4" categories={user.categories} refetchTransactions={refetch}>
-      <button className="w-max py-2 px-5 border-2 border-gray-400 dark:text-white mb-3 bg-black/20" onClick={() => setPath("home")}>Go Back</button>
+      <button className="w-max py-2 px-5 border-2 border-gray-400 mb-3 bg-black/20" onClick={() => setPath("home")}>Go Back</button>
       <div className="bg-white p-5 rounded-lg shadow-sm dark:bg-slate-800">
-        <h1 className="text-xl font-bold mb-2 dark:text-white"> Filters </h1>
+        <h1 className="text-xl font-bold mb-2 "> Filters </h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm mb-5">Filter and search your transactions</p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div>
@@ -68,7 +68,7 @@ export default function Transactions({ user }) {
 
           <div className="flex flex-col">
             <Label htmlFor="category">Category</Label>
-            <select name="category" value={category} onChange={(e) => setCategory(e.target.value)} className="border dark:bg-slate-600 border-black dark:border-gray-400 dark:text-white h-10 rounded-lg px-3" id="category">
+            <select name="category" value={category} onChange={(e) => setCategory(e.target.value)} className="border dark:bg-slate-600 border-black dark:border-gray-400 h-10 rounded-lg px-3" id="category">
               <option value="all">All Categories</option>
               {user.categories && user.categories.map((c) => <option value={c.name}>{c.name == "all" ? "All Categories" : c.name}</option>)}
             </select>
@@ -76,7 +76,7 @@ export default function Transactions({ user }) {
 
           <div className="flex flex-col">
             <Label htmlFor="type">Type</Label>
-            <select name="category" value={type} onChange={(e) => setType(e.target.value)} className="border dark:bg-slate-600 border-black dark:border-gray-400 dark:text-white h-10 rounded-lg px-3" id="type">
+            <select name="category" value={type} onChange={(e) => setType(e.target.value)} className="border dark:bg-slate-600 border-black dark:border-gray-400 h-10 rounded-lg px-3" id="type">
               <option value="all">All Types</option>
               <option value="expense">Expense</option>
               <option value="income">Income</option>
@@ -94,13 +94,13 @@ export default function Transactions({ user }) {
           </div>
         </div>
         <div className="flex justify-between mt-5">
-          <button onClick={resetFilters} className="border-2 rounded-sm py-2 px-3 border-gray-400 dark:text-white hover:bg-gray-400 hover:text-white transition-colors">Clear All Filters</button>
+          <button onClick={resetFilters} className="border-2 rounded-sm py-2 px-3 border-gray-400 hover:bg-gray-400 hover:text-white transition-colors">Clear All Filters</button>
           <Button className="px-4" onClick={refetch}>Show</Button>
         </div>
       </div>
 
       <div className="bg-white p-5 rounded-lg shadow-sm dark:bg-slate-800">
-        <h1 className="text-xl font-bold mb-2 dark:text-white">Transactions</h1>
+        <h1 className="text-xl font-bold mb-2 ">Transactions</h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm mb-5">Detailed view of all your transactions</p>
         <TableRow className="text-sm text-gray-500" date="Date" description="Description" category="Category" controls amount="Amount" type="header" />
         {transactions &&
