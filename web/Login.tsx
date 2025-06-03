@@ -2,17 +2,20 @@ import Input from "./components/Input";
 import Button from "./components/Button";
 import Label from "./components/Label";
 import ErrorMessage from "./components/ErrorMessage";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { API_URL } from "./consts";
 import type { User } from "./types";
 import Base from "./components/Base";
+import { SetInitialContext } from "./contexts";
 
-export default function Login({ onPathChange, onUserChange }: { onPathChange: (path: string) => void, onUserChange: (user: User) => void }) {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [invalidCreds, setInvalidCreds] = useState(false);
+
+  const [setPath, setUser] = useContext(SetInitialContext);;
 
   const isPasswordValid = () => {
     if (password.length > 0 && password.length < 8) {
@@ -40,8 +43,8 @@ export default function Login({ onPathChange, onUserChange }: { onPathChange: (p
       const body = await response.json();
       setInvalidCreds(false);
       localStorage.setItem("jwt", body.jwt);
-      onUserChange(body);
-      onPathChange("home");
+      setUser(body);
+      setPath("home");
     } finally {
       setIsLoading(false);
     }
@@ -77,7 +80,7 @@ export default function Login({ onPathChange, onUserChange }: { onPathChange: (p
           </div>
           <Button type="submit" className="w-full" loading={isLoading}>{isLoading ? 'Signing in...' : 'Sign In'}</Button>
         </form>
-        <p className="text-center dark:text-white">Don't have an account? <a href="#" onClick={() => onPathChange("signup")} className="text-cyan-700 dark:text-teal-500 hover:text-cyan-900 dark:hover:text-teal-300">Sign Up</a> </p>
+        <p className="text-center dark:text-white">Don't have an account? <a href="#" onClick={() => setPath("signup")} className="text-cyan-700 dark:text-teal-500 hover:text-cyan-900 dark:hover:text-teal-300">Sign Up</a> </p>
       </div>
     </Base >
   )

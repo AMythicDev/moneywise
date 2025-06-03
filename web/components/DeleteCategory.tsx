@@ -3,7 +3,7 @@ import { refetchUser } from "../utils";
 import { transactionModalStyles } from "../consts";
 import Modal from "react-modal";
 
-export default function DeleteCategory({ name, type, setUser, setDeleteCategory }: { name: string, type: string }) {
+export default function DeleteCategory({ name, type, setDeleteCategory }: { name: string, type: string }) {
   const handleDeletion = async (e) => {
     const jwt = localStorage.getItem("jwt");
     await fetch(`${API_URL}/deletecategory/${type}/${name}`, { method: "DELETE", headers: { "Authorization": jwt } })

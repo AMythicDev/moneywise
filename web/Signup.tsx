@@ -3,11 +3,12 @@ import Button from "./components/Button";
 import Label from "./components/Label";
 import ErrorMessage from "./components/ErrorMessage";
 import { API_URL } from "./consts";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import type { User } from "./types";
 import Base from "./components/Base";
+import { SetInitialContext } from "./contexts";
 
-export default function Signup({ onPathChange, onUserChange }: { onPathChange: (path: string) => void, onUserChange: (user: User) => void }) {
+export default function Signup() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
@@ -16,6 +17,8 @@ export default function Signup({ onPathChange, onUserChange }: { onPathChange: (
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [emailUsed, setEmailUsed] = useState(false);
+
+  const [setPath, setUser] = useContext(SetInitialContext);
 
   const isPasswordValid = () => {
     if (password.length > 0 && password.length < 8) {
@@ -51,8 +54,8 @@ export default function Signup({ onPathChange, onUserChange }: { onPathChange: (
       const body = await response.json();
       setEmailUsed(false);
       localStorage.setItem("jwt", body._id);
-      onUserChange(body);
-      onPathChange("home");
+      setUser(body);
+      setPath("home");
     } catch (e) {
       console.log(typeof e);
     } finally {
@@ -102,7 +105,7 @@ export default function Signup({ onPathChange, onUserChange }: { onPathChange: (
 
           <Button className="w-full" loading={isLoading} type="submit">{isLoading ? "Signing up..." : "Sign Up"}</Button>
         </form>
-        <p className="text-center dark:text-white">Already have an account? <a href="#" onClick={() => onPathChange("signin")} className="text-cyan-700 hover:text-cyan-900 dark:text-teal-500 dark:hover:text-teal-300">Sign In</a> </p>
+        <p className="text-center dark:text-white">Already have an account? <a href="#" onClick={() => setPath("signin")} className="text-cyan-700 hover:text-cyan-900 dark:text-teal-500 dark:hover:text-teal-300">Sign In</a> </p>
       </div >
     </Base >
   )

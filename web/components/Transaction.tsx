@@ -1,21 +1,26 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Button from "./Button";
 import Input from "./Input";
 import Label from "./Label";
 import Modal from "react-modal";
 import { API_URL } from "../consts";
 import { transactionModalStyles } from "../consts";
+import { refetchUser } from "../utils";
+import { SetInitialContext } from "../contexts";
 
 function dateToString(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth() + 1 <= 9 && 0}${d.getMonth() + 1}-${d.getDate() <= 9 && 0}${d.getDate()}`
 }
 
-export default function Transaction({ setIsOpen, refetchTransactions, refetchUser, categories, updateTransaction = null, ...props }) {
+export default function Transaction({ setIsOpen, refetchTransactions, categories, updateTransaction = null, ...props }) {
   const [description, setDescription] = useState(updateTransaction != null ? updateTransaction.description : "");
   const [type, setType] = useState(updateTransaction ? updateTransaction.type : "expense");
   const [category, setCategory] = useState(updateTransaction ? updateTransaction.category : undefined);
+  const [recurring, setRecurring] = useState(updateTransaction ? updateTransaction.recurring : "Never");
   const [amount, setAmount] = useState(updateTransaction ? updateTransaction.amount : "");
   const [date, setDate] = useState(dateToString(new Date()));
+
+  const [_, setUser] = useContext(SetInitialContext);
 
   const submitForm = async (e) => {
     e.preventDefault();
@@ -33,7 +38,7 @@ export default function Transaction({ setIsOpen, refetchTransactions, refetchUse
           },
           body: JSON.stringify({ name: category, type: type })
         });
-      await refetchUser();
+      await refetchUser(setUser);
     }
 
     const categoryRefined = category.length > 0 ? category : null;
@@ -45,14 +50,14 @@ export default function Transaction({ setIsOpen, refetchTransactions, refetchUse
           "Authorization": jwt,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ description: description, type: type, category: categoryRefined, amount: parseInt(amount), date: date })
+        body: JSON.stringify({ description: description, type: type, category: categoryRefined, amount: parseInt(amount), date: date, recurring: recurring })
       });
     setIsOpen(false);
     refetchTransactions();
   }
 
   return (
-    <Modal isOpen={true} contentLabel="Add Transaction" {...props} className="dark:bg-slate-800 p-7 w-[90%] lg:w-[50%]" style={transactionModalStyles}>
+    <Modal isOpen={true} contentLabel="Add Transaction" {...props} className="bg-white dark:bg-slate-800 p-7 w-[90%] lg:w-[50%]" style={transactionModalStyles}>
       <div>
         <h1 className="font-bold text-xl mb-3 dark:text-white">Add Transaction</h1>
         <form className="flex flex-col gap-3" onSubmit={submitForm}>
@@ -80,6 +85,17 @@ export default function Transaction({ setIsOpen, refetchTransactions, refetchUse
               }
             </div>
           </div>
+
+          <div>
+            <Label htmlFor="recurring" className="mr-4">Recurring</Label>
+            <select name="recurring" value={recurring} onChange={(e) => setRecurring(e.target.value)} id="recurring" className="border-gray-400 border py-1 px-3 dark:text-white">
+              <option value="Never">Never</option>
+              <option value="Daily">Daily</option>
+              <option value="Monthly">Monthly</option>
+              <option value="Yearly">Yearly</option>
+            </select>
+          </div>
+
           <Label htmlFor="amount">Amount</Label>
           <Input type="number" placeholder="200" id="amount" value={amount} onChange={(e) => setAmount(e.target.value)} required />
           <Label htmlFor="date">Date</Label>

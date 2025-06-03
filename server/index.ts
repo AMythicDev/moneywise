@@ -96,6 +96,7 @@ app.get("/transactions", verifyToken, async (req, res) => {
 
   if (req.query.type) query.type = req.query.type;
   if (req.query.category) query.category = req.query.category;
+  if (req.query.description) query.description = req.query.description;
 
   let cursor = trans.find(query).sort({ "date": -1 });
   if (req.query.limit) cursor.limit(parseInt(req.query.limit));

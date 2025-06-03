@@ -1,18 +1,21 @@
 import { getTheme, setTheme as setUITheme } from "../utils";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DeleteCategory from "./DeleteCategory";
 import Input from "./Input";
 import Label from "./Label";
 import { API_URL } from "../consts";
 import { refetchUser } from "../utils";
+import { SetInitialContext } from "../contexts";
 
-export default function({ width, setPath, setUser = null, categories = null, refetchTransactions = null }: { width: string }) {
+export default function({ width, categories = null, refetchTransactions = null }: { width: string }) {
   const [theme, setTheme] = useState(getTheme());
   useEffect(() => setUITheme(theme), [theme]);
 
   const [deleteCategory, setDeleteCategory] = useState(null);
   const [editCategory, setEditCategory] = useState(null);
   const [newEditCategory, setNewEditCategory] = useState(null);
+
+  const [setPath, setUser] = useContext(SetInitialContext);
 
   const logout = () => {
     localStorage.removeItem("jwt");

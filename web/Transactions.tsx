@@ -1,15 +1,17 @@
 import { API_URL } from "./consts";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Transaction from "./components/Transaction";
 import Button from "./components/Button";
 import TableRow from "./components/TableRow";
 import Input from "./components/Input";
 import Label from "./components/Label";
 import Base from "./components/Base";
-import { refetchUser } from "./utils";
+import { SetInitialContext } from "./contexts";
+import DeleteTransaction from "./components/DeleteTransaction";
 
-function getTransactions(category: string, type: string, startDate?: string, endDate?: string, setTransactions) {
+function getTransactions(description: string, category: string, type: string, startDate?: string, endDate?: string, setTransactions) {
   const url = new URL(`${API_URL}/transactions/`)
+  if (description != "") url.searchParams.append("description", description);
   if (category != "all") url.searchParams.append("category", category);
   if (type != "all") url.searchParams.append("type", type);
   if (startDate) url.searchParams.append("dateAfter", startDate);
@@ -23,7 +25,8 @@ function getTransactions(category: string, type: string, startDate?: string, end
     });
 }
 
-export default function Transactions({ user, setUser, setPath, }) {
+export default function Transactions({ user }) {
+  const [description, setDescription] = useState("");
   const [category, setCategory] = useState("all");
   const [type, setType] = useState("all");
   const [startDate, setStartDate] = useState(undefined);
@@ -32,8 +35,11 @@ export default function Transactions({ user, setUser, setPath, }) {
   const [transactions, setTransactions] = useState(null);
   const [transactionModalOpem, setTransactionModalOpen] = useState(false);
   const [updateTransactionRecord, setUpdateTransactionRecord] = useState(null);
+  const [deleteTransactionRecord, setDeleteTransactionRecord] = useState(null);
 
-  const refetch = () => getTransactions(category, type, startDate, endDate, setTransactions);
+  const [setPath, _] = useContext(SetInitialContext);
+
+  const refetch = () => getTransactions(description, category, type, startDate, endDate, setTransactions);
   const resetFilters = () => {
     setCategory("all");
     setType("all");
@@ -49,14 +55,15 @@ export default function Transactions({ user, setUser, setPath, }) {
   useEffect(() => updateTransactionRecord ? setTransactionModalOpen(true) : setTransactionModalOpen(false), [updateTransactionRecord]);
 
   return (
-    <Base className="min-h-screen p-5 flex flex-col gap-4" setUser={setUser} setPath={setPath} categories={user.categories} refetchTransactions={refetch}>
+    <Base className="min-h-screen p-5 flex flex-col gap-4" categories={user.categories} refetchTransactions={refetch}>
+      <button className="w-max py-2 px-5 border-2 border-gray-400 dark:text-white mb-3 bg-black/20" onClick={() => setPath("home")}>Go Back</button>
       <div className="bg-white p-5 rounded-lg shadow-sm dark:bg-slate-800">
         <h1 className="text-xl font-bold mb-2 dark:text-white"> Filters </h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm mb-5">Filter and search your transactions</p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div>
             <Label htmlFor="description">Description</Label>
-            <Input type="text" placeholder="Dinner with friends" id="description" />
+            <Input type="text" placeholder="Dinner with friends" id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
           </div>
 
           <div className="flex flex-col">
@@ -98,17 +105,17 @@ export default function Transactions({ user, setUser, setPath, }) {
         <TableRow className="text-sm text-gray-500" date="Date" description="Description" category="Category" controls amount="Amount" type="header" />
         {transactions &&
           transactions.map((t) => {
-            return (<TableRow className="!h-12" key={t._id} id={t._id} setUpdateTransactionRecord={setUpdateTransactionRecord} controls {...t} date={new Date(t.date)} />);
+            return (<TableRow className="!h-12" key={t._id} id={t._id} setDeleteTransactionRecord={setDeleteTransactionRecord} setUpdateTransactionRecord={setUpdateTransactionRecord} controls {...t} date={new Date(t.date)} />);
           })}
       </div>
       <div className="fixed bottom-8 left-0 flex justify-center w-full">
         <Button className="px-3" onClick={(_) => setTransactionModalOpen(true)}> <span className="mr-2">+</span>Add Transaction</Button>
       </div>
+      {deleteTransactionRecord && <DeleteTransaction refetch={refetch} setDeleteTransactionRecord={setDeleteTransactionRecord} deleteTransactionRecord={deleteTransactionRecord}  />}
       {transactionModalOpem &&
         <Transaction
           setIsOpen={setTransactionModalOpen}
           refetchTransactions={refetch}
-          refetchUser={() => refetchUser(setUser)}
           updateTransaction={updateTransactionRecord}
           onRequestClose={closeTranssactionModal}
           categories={user.categories} />

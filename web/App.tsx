@@ -4,6 +4,7 @@ import Login from "./Login.tsx";
 import Signup from "./Signup.tsx";
 import { API_URL } from './consts.ts';
 import Transactions from './Transactions.tsx';
+import { SetInitialContext } from './contexts.ts';
 
 function App() {
   const [path, setPath] = useState(null);
@@ -29,18 +30,20 @@ function App() {
 
   let content;
   if (path == "signin") {
-    content = <Login onPathChange={(path) => setPath(path)} onUserChange={(user) => setUser(user)} />
+    content = <Login />
   } else if (path == "home") {
-    content = <Home onPathChange={(path) => setPath(path)} setUser={setUser} user={user} />
+    content = <Home user={user} />
   } else if (path == "signup") {
-    content = <Signup onPathChange={(path) => setPath(path)} onUserChange={(u) => setUser(u)} />
+    content = <Signup />
   } else if (path == "transactions") {
-    content = <Transactions user={user} setUser={setUser} setPath={setPath} />
+    content = <Transactions user={user} />
   }
 
   return (
     <>
-      {content}
+      <SetInitialContext.Provider value={[setPath, setUser]}>
+        {content}
+      </SetInitialContext.Provider>
     </>
   )
 }
