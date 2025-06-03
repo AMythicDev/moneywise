@@ -5,10 +5,11 @@ import Signup from "./Signup.tsx";
 import { API_URL } from './consts.ts';
 import Transactions from './Transactions.tsx';
 import { SetInitialContext } from './contexts.ts';
+import { type User } from './types.ts';
 
 function App() {
-  const [path, setPath] = useState(null);
-  const [user, setUser] = useState(null);
+  const [path, setPath] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
@@ -36,7 +37,7 @@ function App() {
   } else if (path == "signup") {
     content = <Signup />
   } else if (path == "transactions") {
-    content = <Transactions user={user} />
+    content = <Transactions user={user!} />
   }
 
   return (

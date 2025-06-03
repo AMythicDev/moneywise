@@ -1,17 +1,24 @@
 import Modal from "react-modal";
 import { transactionModalStyles } from "../consts";
 import { API_URL } from "../consts";
+import type { SetState, Transaction } from "../types";
 
 function formatDate(d: Date | string): string {
   if (typeof d == "string") return d;
   return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
 }
 
-export default function DeleteTransaction({ deleteTransactionRecord, setDeleteTransactionRecord, refetch, ...props }) {
+interface DeleteTransactionProps {
+  deleteTransactionRecord: Transaction,
+  setDeleteTransactionRecord: SetState<Transaction | null>,
+  refetch: () => void,
+}
+
+export default function DeleteTransaction({ deleteTransactionRecord, setDeleteTransactionRecord, refetch, ...props }: DeleteTransactionProps) {
   const deleteTransaction = async () => {
-    const jwt = localStorage.getItem("jwt");
+    const jwt = localStorage.getItem("jwt")!;
     await fetch(`${API_URL}/deletetransaction/${deleteTransactionRecord._id}`, { method: "DELETE", headers: { Authorization: jwt } });
-    await refetch();
+    refetch();
     setDeleteTransactionRecord(null);
   }
   return (

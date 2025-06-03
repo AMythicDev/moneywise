@@ -1,43 +1,43 @@
-import { type User } from "./types"
+import type { Transaction, User, SetState } from "./types"
 import TableRow from "./components/TableRow"
 import Button from "./components/Button";
 import { API_URL } from "./consts";
 import { useContext, useEffect, useState } from "react";
-import Transaction from "./components/Transaction";
+import TransactionDialog from "./components/TransactionDialog.tsx";
 import CategorySpendings from "./components/CategorySpendings";
 import { refetchUser } from "./utils";
 import Base from "./components/Base";
-import { SetInitialContext } from "./contexts";
+import { SetInitialContext, type InitialContextType } from "./contexts";
 import WeeklyGraph from "./components/WeeklyGraph";
 
 interface HomeProps {
   user: User | null,
 }
 
-function transactionsForMonth(setTransactions) {
+function transactionsForMonth(setTransactions: SetState<Transaction[] | null>) {
   const day = new Date();
   const dateAfter = `${day.getFullYear()}-${day.getMonth() + 1}-01`
   const dateBefore = `${day.getFullYear()}-${day.getMonth() + 2}-01`
-  const jwt = localStorage.getItem("jwt");
-  fetch(`${API_URL}/transactions?dateAfter=${dateAfter}&dateBefore=${dateBefore}&limit=10`, { headers: { "Authorization": jwt } })
+  const jwt: string = localStorage.getItem("jwt")!;
+  fetch(`${API_URL}/transactions?dateAfter=${dateAfter}&dateBefore=${dateBefore}&limit=10`, { headers: { Authorization: jwt } })
     .then((resp) => resp.json())
-    .then((body) => {
+    .then((body: Transaction[]) => {
       setTransactions(body);
     });
 }
 
 export default function Home({ user }: HomeProps) {
   if (user == null) return null;
-  const [transactions, setTransactions] = useState(null);
+  const [transactions, setTransactions] = useState<Transaction[] | null>(null);
   const [transactionModalOpem, setTransactionModalOpen] = useState(false);
   useEffect(() => {
     transactionsForMonth(setTransactions);
   }, [])
 
-  const [setPath, setUser] = useContext(SetInitialContext);
+  const [setPath, setUser] = useContext<InitialContextType>(SetInitialContext);
 
   return (
-    <Base setUser={setUser} categories={user.categories} refetchTransactions={() => transactionsForMonth(setTransactions)} className="pb-7">
+    <Base categories={user.categories} refetchTransactions={() => transactionsForMonth(setTransactions)} className="pb-7">
       <div className="grid grid-cols-2 lg:grid-cols-4 lg:grid-rows-4 gap-6 px-5 lg:px-16">
 
         <div className="row-span-4 col-span-2 bg-white dark:bg-slate-800 p-5 rounded-lg shadow-sm">
@@ -47,7 +47,7 @@ export default function Home({ user }: HomeProps) {
             {transactions && transactions.map((t) => <TableRow key={t._id} {...t} date={new Date(t.date)} />)}
           </div>
           <div className="flex justify-center">
-            <Button className="px-4 !py-1.5" onClick={() => setPath("transactions")}>See All</Button>
+            <Button className="px-4 !py-1.5" onClick={() => setPath!("transactions")}>See All</Button>
           </div>
         </div>
 
@@ -80,10 +80,10 @@ export default function Home({ user }: HomeProps) {
       </div>
       {
         transactionModalOpem &&
-        <Transaction
+        <TransactionDialog
           setIsOpen={setTransactionModalOpen}
           refetchTransactions={() => transactionsForMonth(setTransactions)}
-          refetchUser={() => refetchUser(setUser)}
+          refetchUser={() => refetchUser(setUser!)}
           onRequestClose={() => setTransactionModalOpen(false)}
           categories={user.categories}
         />

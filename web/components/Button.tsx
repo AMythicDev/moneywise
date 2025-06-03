@@ -1,7 +1,7 @@
 import { type ComponentPropsWithoutRef } from "react"
 
 type ButtonProps = ComponentPropsWithoutRef<"button"> & {
-  loading: boolean
+  loading?: boolean
 }
 
 export default function Button({ children, loading = false, className, ...props }: ButtonProps) {

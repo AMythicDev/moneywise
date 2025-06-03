@@ -2,15 +2,19 @@ import { API_URL } from "../consts";
 import { refetchUser } from "../utils";
 import { transactionModalStyles } from "../consts";
 import Modal from "react-modal";
+import type { SetState, TransactionCategory } from "../types";
+import { useContext } from "react";
+import { SetInitialContext } from "../contexts";
 
-export default function DeleteCategory({ name, type, setDeleteCategory }: { name: string, type: string }) {
-  const handleDeletion = async (e) => {
-    const jwt = localStorage.getItem("jwt");
+export default function DeleteCategory({ name, type, setDeleteCategory }: { name: string, type: string, setDeleteCategory: SetState<TransactionCategory | null> }) {
+  const setUser = useContext(SetInitialContext)[1]!;
+
+  const handleDeletion = async () => {
+    const jwt = localStorage.getItem("jwt")!;
     await fetch(`${API_URL}/deletecategory/${type}/${name}`, { method: "DELETE", headers: { "Authorization": jwt } })
     await refetchUser(setUser)
     setDeleteCategory(null);
   }
-
 
   return (
     <Modal isOpen={true} onRequestClose={() => setDeleteCategory(null)} className="dark:bg-slate-800 dark:text-white p-7 w-[90%] lg:w-[50%]" style={transactionModalStyles}>

@@ -1,6 +1,6 @@
 import { API_URL } from "./consts";
 import { useContext, useEffect, useState } from "react";
-import Transaction from "./components/Transaction";
+import TransactionDialog from "./components/TransactionDialog";
 import Button from "./components/Button";
 import TableRow from "./components/TableRow";
 import Input from "./components/Input";
@@ -8,8 +8,9 @@ import Label from "./components/Label";
 import Base from "./components/Base";
 import { SetInitialContext } from "./contexts";
 import DeleteTransaction from "./components/DeleteTransaction";
+import type { User, Transaction, SetState } from "./types";
 
-function getTransactions(description: string, category: string, type: string, startDate?: string, endDate?: string, setTransactions) {
+function getTransactions(setTransactions: SetState<Transaction[] | null>, description: string, category: string, type: string, startDate?: string, endDate?: string) {
   const url = new URL(`${API_URL}/transactions/`)
   if (description != "") url.searchParams.append("description", description);
   if (category != "all") url.searchParams.append("category", category);
@@ -17,7 +18,7 @@ function getTransactions(description: string, category: string, type: string, st
   if (startDate) url.searchParams.append("dateAfter", startDate);
   if (endDate) url.searchParams.append("dateBefore", endDate);
 
-  const jwt = localStorage.getItem("jwt");
+  const jwt = localStorage.getItem("jwt")!;
   fetch(url.toString(), { headers: { "Authorization": jwt } })
     .then((resp) => resp.json())
     .then((body) => {
@@ -25,26 +26,27 @@ function getTransactions(description: string, category: string, type: string, st
     });
 }
 
-export default function Transactions({ user }) {
+export default function Transactions({ user }: { user: User }) {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("all");
   const [type, setType] = useState("all");
-  const [startDate, setStartDate] = useState(undefined);
-  const [endDate, setEndDate] = useState(undefined);
+  const [startDate, setStartDate] = useState<string | undefined>(undefined);
+  const [endDate, setEndDate] = useState<string | undefined>(undefined);
 
-  const [transactions, setTransactions] = useState(null);
+  const [transactions, setTransactions] = useState<Transaction[] | null>(null);
   const [transactionModalOpem, setTransactionModalOpen] = useState(false);
-  const [updateTransactionRecord, setUpdateTransactionRecord] = useState(null);
-  const [deleteTransactionRecord, setDeleteTransactionRecord] = useState(null);
+  const [updateTransactionRecord, setUpdateTransactionRecord] = useState<Transaction | null>(null);
+  const [deleteTransactionRecord, setDeleteTransactionRecord] = useState<Transaction | null>(null);
 
   const [setPath, _] = useContext(SetInitialContext);
 
-  const refetch = () => getTransactions(description, category, type, startDate, endDate, setTransactions);
+  const refetch = () => getTransactions(setTransactions, description, category, type, startDate, endDate);
   const resetFilters = () => {
+    setDescription("");
     setCategory("all");
     setType("all");
-    setStartDate(null);
-    setEndDate(null);
+    setStartDate(undefined);
+    setEndDate(undefined);
   }
   const closeTranssactionModal = () => {
     setTransactionModalOpen(false);
@@ -56,7 +58,7 @@ export default function Transactions({ user }) {
 
   return (
     <Base className="min-h-screen p-5 flex flex-col gap-4" categories={user.categories} refetchTransactions={refetch}>
-      <button className="w-max py-2 px-5 border-2 border-gray-400 mb-3 bg-black/10" onClick={() => setPath("home")}>Go Back</button>
+      <button className="w-max py-2 px-5 border-2 border-gray-400 mb-3 bg-black/10" onClick={() => setPath!("home")}>Go Back</button>
       <div className="bg-white p-5 rounded-lg shadow-sm dark:bg-slate-800">
         <h1 className="text-xl font-bold mb-2 "> Filters </h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm mb-5">Filter and search your transactions</p>
@@ -113,7 +115,7 @@ export default function Transactions({ user }) {
       </div>
       {deleteTransactionRecord && <DeleteTransaction refetch={refetch} setDeleteTransactionRecord={setDeleteTransactionRecord} deleteTransactionRecord={deleteTransactionRecord} />}
       {transactionModalOpem &&
-        <Transaction
+        <TransactionDialog
           setIsOpen={setTransactionModalOpen}
           refetchTransactions={refetch}
           updateTransaction={updateTransactionRecord}

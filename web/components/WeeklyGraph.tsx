@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import type { Transaction } from '../types';
 
 import { Line } from 'react-chartjs-2';
 
@@ -24,7 +25,7 @@ ChartJS.register(
   Legend
 );
 
-export default function WeeklyGraph({ transactions }) {
+export default function WeeklyGraph({ transactions }: {transactions: Transaction[]}) {
   let weeklyIncome = [0, 0, 0, 0, 0];
   let weeklyExpense = [0, 0, 0, 0, 0];
 

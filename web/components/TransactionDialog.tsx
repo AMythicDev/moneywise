@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, type FormEvent } from "react";
 import Button from "./Button";
 import Input from "./Input";
 import Label from "./Label";
@@ -7,22 +7,35 @@ import { API_URL } from "../consts";
 import { transactionModalStyles } from "../consts";
 import { refetchUser } from "../utils";
 import { SetInitialContext } from "../contexts";
+import type { Transaction, TransactionCategory } from "../types";
 
 function dateToString(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth() + 1 <= 9 && 0}${d.getMonth() + 1}-${d.getDate() <= 9 && 0}${d.getDate()}`
 }
 
-export default function Transaction({ setIsOpen, refetchTransactions, categories, updateTransaction = null, ...props }) {
+interface TransactionProps {
+  setIsOpen: (v: boolean) => void,
+  refetchTransactions: () => void,
+  categories: TransactionCategory[],
+  updateTransaction?: Transaction | null,
+  onRequestClose: () => void,
+  refetchUser?: () => void,
+}
+
+export default function Transaction({ setIsOpen, refetchTransactions, categories, updateTransaction = null, ...props }: TransactionProps) {
   const [description, setDescription] = useState(updateTransaction != null ? updateTransaction.description : "");
   const [type, setType] = useState(updateTransaction ? updateTransaction.type : "expense");
-  const [category, setCategory] = useState(updateTransaction ? updateTransaction.category : undefined);
+  const [category, setCategory] = useState(updateTransaction ? updateTransaction.category : "");
   const [recurring, setRecurring] = useState(updateTransaction ? updateTransaction.recurring : "Never");
-  const [amount, setAmount] = useState(updateTransaction ? updateTransaction.amount : "");
+  const [amount, setAmount] = useState(updateTransaction ? updateTransaction.amount.toString() : "");
   const [date, setDate] = useState(dateToString(new Date()));
 
   const [_, setUser] = useContext(SetInitialContext);
 
-  const submitForm = async (e) => {
+  // @ts-ignore
+  const setRecurringState = (e) => setRecurring(e.target.value);
+
+  const submitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const jwt = localStorage.getItem("jwt");
     const url = updateTransaction ? `${API_URL}/updatetransaction/${updateTransaction._id}` : `${API_URL}/newtransaction`;
@@ -33,12 +46,12 @@ export default function Transaction({ setIsOpen, refetchTransactions, categories
         {
           method: "POST",
           headers: {
-            "Authorization": jwt,
+            "Authorization": jwt!,
             "Content-Type": "application/json"
           },
           body: JSON.stringify({ name: category, type: type })
         });
-      await refetchUser(setUser);
+      await refetchUser(setUser!);
     }
 
     const categoryRefined = category.length > 0 ? category : null;
@@ -47,7 +60,7 @@ export default function Transaction({ setIsOpen, refetchTransactions, categories
       {
         method: method,
         headers: {
-          "Authorization": jwt,
+          "Authorization": jwt!,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ description: description, type: type, category: categoryRefined, amount: parseInt(amount), date: date, recurring: recurring })
@@ -88,7 +101,7 @@ export default function Transaction({ setIsOpen, refetchTransactions, categories
 
           <div>
             <Label htmlFor="recurring" className="mr-4">Recurring</Label>
-            <select name="recurring" value={recurring} onChange={(e) => setRecurring(e.target.value)} id="recurring" className="border-gray-400 border py-1 px-3">
+            <select name="recurring" value={recurring} onChange={setRecurringState} id="recurring" className="border-gray-400 border py-1 px-3">
               <option value="Never">Never</option>
               <option value="Daily">Daily</option>
               <option value="Monthly">Monthly</option>

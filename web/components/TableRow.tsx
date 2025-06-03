@@ -1,15 +1,20 @@
+import type { SetState, Transaction } from "../types";
+
 interface TableRowProps {
   className?: string,
   type?: "income" | "expense" | "header",
-  date: Date,
+  date: Date | string,
   description: string,
+  user_id?: string,
   category: string,
   amount: number | string,
-  recurring: "Recurring" | "Never" | "Daily" | "Weekly" | "Monthly" | "Yearly"
-  last: boolean,
-  controls: boolean,
-  header: boolean,
-  _id: string,
+  recurring?: "Recurring" | "Never" | "Daily" | "Weekly" | "Monthly" | "Yearly"
+  last?: boolean,
+  controls?: boolean,
+  header?: boolean,
+  _id?: string,
+  setDeleteTransactionRecord?: SetState<Transaction | null>,
+  setUpdateTransactionRecord?: SetState<Transaction | null>
 }
 
 function formatDate(d: Date | string): string {
@@ -28,6 +33,11 @@ export default function TableRow({ last = false, controls = false, setDeleteTran
     sign = "+₹";
   }
 
+  // @ts-ignore
+  const setUpdateRecord = () => setUpdateTransactionRecord({...props})
+  // @ts-ignore
+  const setDeleteRecord = () => setDeleteTransactionRecord({...props})
+
   return (
     <div className={`flex justify-around min-h-10 py-1 dark:${props.type == 'header' ? 'text-gray-400' : 'text-white'} ${!last ? 'border-b-2 border-gray-200 dark:border-gray-700' : null} ${className}`}>
       {controls == false ?
@@ -45,10 +55,8 @@ export default function TableRow({ last = false, controls = false, setDeleteTran
           <span className="w-[5%] inline-flex items-center">{props.recurring ?? "Never"}</span>
           <span className={`w-[10%] justify-end inline-flex items-center mr-10 ${amount_color}`}>{sign}{props.amount}</span>
           {props.type != "header" ? <>
-            <button className="w-[5%] border-2 rounded-lg border-teal-500 hover:text-white hover:bg-teal-500 transition-colors" onClick={() =>
-              setUpdateTransactionRecord({ ...props })
-            }>Edit</button>
-            <button className="w-[5%] border-2 rounded-lg border-red-400 hover:text-white hover:bg-red-400 transition-colors" onClick={() => setDeleteTransactionRecord({ ...props })}>Delete</button>
+            <button className="w-[5%] border-2 rounded-lg border-teal-500 hover:text-white hover:bg-teal-500 transition-colors" onClick={setUpdateRecord}>Edit</button>
+            <button className="w-[5%] border-2 rounded-lg border-red-400 hover:text-white hover:bg-red-400 transition-colors" onClick={setDeleteRecord}>Delete</button>
           </> : <>
             <span className="w-[5%] pr-2.5"></span>
             <span className="w-[5%]"></span>

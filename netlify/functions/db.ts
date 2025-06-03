@@ -14,7 +14,7 @@ export interface User {
   lastname?: string,
   email?: string,
   password?: string,
-  categories: TransactionCategory[],
+  categories?: TransactionCategory[],
 }
 
 export interface Transaction {

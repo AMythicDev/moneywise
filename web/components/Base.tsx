@@ -1,10 +1,14 @@
 import Sidebar from "./Sidebar"
 import Hamburger from "./Hamburger"
 import { useState, type ComponentPropsWithoutRef } from "react"
+import type { TransactionCategory } from "../types"
 
-type BaseProps = ComponentPropsWithoutRef<"div">
+type BaseProps = ComponentPropsWithoutRef<"div"> & {
+  categories?: TransactionCategory[] | null,
+  refetchTransactions?: (() => void) | null
+}
 
-export default function Base({ children, className = null, refetchTransactions = null, categories = null, }: BaseProps) {
+export default function Base({ children, className, refetchTransactions = null, categories = null, }: BaseProps) {
   const [sidebarWidth, setSidebarWidth] = useState('0');
 
   const toggleSidebar = () => {

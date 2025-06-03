@@ -6,33 +6,34 @@ import Label from "./Label";
 import { API_URL } from "../consts";
 import { refetchUser } from "../utils";
 import { SetInitialContext } from "../contexts";
+import type { TransactionCategory } from "../types";
 
-export default function({ width, categories = null, refetchTransactions = null }: { width: string }) {
+export default function({ width, categories = null, refetchTransactions = null }: { width: string, categories: TransactionCategory[] | null, refetchTransactions:(() => void) | null }) {
   const [theme, setTheme] = useState(getTheme());
   useEffect(() => setUITheme(theme), [theme]);
 
-  const [deleteCategory, setDeleteCategory] = useState(null);
-  const [editCategory, setEditCategory] = useState(null);
-  const [newEditCategory, setNewEditCategory] = useState(null);
+  const [deleteCategory, setDeleteCategory] = useState<TransactionCategory | null>(null);
+  const [editCategory, setEditCategory] = useState<TransactionCategory | null>(null);
+  const [newEditCategory, setNewEditCategory] = useState<TransactionCategory | null>(null);
 
   const [setPath, setUser] = useContext(SetInitialContext);
 
   const logout = () => {
     localStorage.removeItem("jwt");
-    setUser(null);
-    setPath("signin");
+    setUser!(null);
+    setPath!("signin");
   }
 
-  const handleEdit = async (e) => {
-    const jwt = localStorage.getItem("jwt");
-    await fetch(`${API_URL}/updatecategory/${editCategory.type}/${editCategory.name}`,
-      { method: "PUT", headers: { "Authorization": jwt, "Content-Type": "application/json" }, body: JSON.stringify({ name: newEditCategory.name, type: newEditCategory.type }) })
-    await refetchUser(setUser)
-    await refetchTransactions();
+  const handleEdit = async () => {
+    const jwt = localStorage.getItem("jwt")!;
+    await fetch(`${API_URL}/updatecategory/${editCategory!.type}/${editCategory!.name}`,
+      { method: "PUT", headers: { "Authorization": jwt, "Content-Type": "application/json" }, body: JSON.stringify({ name: newEditCategory!.name, type: newEditCategory!.type }) })
+    await refetchUser(setUser!)
+    if (refetchTransactions) refetchTransactions();
     setEditCategory(null);
   }
 
-  const handleEditButton = (c) => {
+  const handleEditButton = (c: TransactionCategory) => {
     setEditCategory({ name: c.name, type: c.type })
     setNewEditCategory({ name: c.name, type: c.type })
   }
@@ -68,12 +69,12 @@ export default function({ width, categories = null, refetchTransactions = null }
                   {editCategory && editCategory.name == c.name && editCategory.type == c.type &&
                     <div className="mt-2 mb-2">
                       <h1 className="font-bold mb-3">Edit Category</h1>
-                      <Input type="text" value={newEditCategory.name} onChange={(e) => setNewEditCategory({ name: e.target.value, type: editCategory.type })} />
+                      <Input type="text" value={newEditCategory!.name} onChange={(e) => setNewEditCategory({ name: e.target.value, type: editCategory.type })} />
                       <div className="mt-1">
                         <span className="mr-8">Type</span>
-                        <input type="radio" name="type" id="expense" value="Expense" className="checked:accent-red-300" checked={newEditCategory.type == "expense"} onChange={() => setNewEditCategory({ name: editCategory.name, type: "expense" })} />
+                        <input type="radio" name="type" id="expense" value="Expense" className="checked:accent-red-300" checked={newEditCategory!.type == "expense"} onChange={() => setNewEditCategory({ name: editCategory.name, type: "expense" })} />
                         <Label htmlFor="expense" className="mr-4 text-red-400">Expense</Label>
-                        <input type="radio" name="type" id="income" value="Income" className="checked:accent-teal-500" checked={newEditCategory.type == "income"} onChange={() => setNewEditCategory({ name: editCategory.name, type: "income" })} />
+                        <input type="radio" name="type" id="income" value="Income" className="checked:accent-teal-500" checked={newEditCategory!.type == "income"} onChange={() => setNewEditCategory({ name: editCategory.name, type: "income" })} />
                         <Label htmlFor="income" className="text-teal-500">Income</Label>
                         <div className="flex justify-between w-full mt-5">
                           <button className="border-2 border-gray-400 text-gray-400 py-1 px-3" onClick={() => setEditCategory(null)}>Cancel</button>
@@ -90,7 +91,7 @@ export default function({ width, categories = null, refetchTransactions = null }
           <button className="bg-red-400 text-white py-2 shadow-lg rounded-lg" onClick={logout}>Logout</button>
         }
       </div>
-      {deleteCategory && <DeleteCategory name={deleteCategory.name} type={deleteCategory.type} setDeleteCategory={setDeleteCategory} setUser={setUser} />}
+      {deleteCategory && <DeleteCategory name={deleteCategory.name} type={deleteCategory.type} setDeleteCategory={setDeleteCategory} />}
     </div>
   )
 }
