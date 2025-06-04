@@ -7,6 +7,7 @@ intent to maintain in any way or form. The cloud version available can be shutte
 in my college.
 
 ## Usage
+URL: https://moneywise-swart.vercel.app
 
 # License
 This software is available under a custom source available license which allows anyone obtaining its copy to run, study and share the project. However modifying the software
