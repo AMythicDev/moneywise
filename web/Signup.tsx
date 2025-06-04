@@ -52,11 +52,11 @@ export default function Signup() {
       }
       const body = await response.json();
       setEmailUsed(false);
-      localStorage.setItem("jwt", body._id);
+      localStorage.setItem("jwt", body.jwt);
       setUser!(body);
       setPath!("home");
     } catch (e) {
-      console.log(typeof e);
+      console.log(e);
     } finally {
       setIsLoading(false);
     }

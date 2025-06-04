@@ -34,7 +34,7 @@ router.post('/signup', express.json(), async (req, res) => {
   body.password = await bcrypt.hash(body.password!, salt)
   let added_user = await users.insertOne(body);
   const token = jwt.sign({ userId: added_user.insertedId }, JWT_SECRET_KEY, { expiresIn: "7d" });
-  res.status(200).json(JSON.stringify({ jwt: token, _id: added_user.insertedId, firstname: user.firstname, lastname: user.lastname }));
+  res.status(200).json({ jwt: token, _id: added_user.insertedId, firstname: body.firstname, lastname: body.lastname, categories: body.categories });
 })
 
 router.post('/login', express.json(), async (req, res) => {
