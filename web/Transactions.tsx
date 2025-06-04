@@ -11,7 +11,7 @@ import DeleteTransaction from "./components/DeleteTransaction";
 import type { User, Transaction, SetState } from "./types";
 
 function getTransactions(setTransactions: SetState<Transaction[] | null>, description: string, category: string, type: string, startDate?: string, endDate?: string) {
-  const url = new URL(`${API_URL}/transactions/`)
+  const url = new URL(`${API_URL}/transactions`)
   if (description != "") url.searchParams.append("description", description);
   if (category != "all") url.searchParams.append("category", category);
   if (type != "all") url.searchParams.append("type", type);
@@ -23,6 +23,7 @@ function getTransactions(setTransactions: SetState<Transaction[] | null>, descri
     .then((resp) => resp.json())
     .then((body) => {
       setTransactions(body);
+      console.log(body);
     });
 }
 
@@ -53,7 +54,7 @@ export default function Transactions({ user }: { user: User }) {
     setUpdateTransactionRecord(null);
   }
 
-  useEffect(() => refetch, []);
+  useEffect(refetch, []);
   useEffect(() => updateTransactionRecord ? setTransactionModalOpen(true) : setTransactionModalOpen(false), [updateTransactionRecord]);
 
   return (
@@ -72,7 +73,7 @@ export default function Transactions({ user }: { user: User }) {
             <Label htmlFor="category">Category</Label>
             <select name="category" value={category} onChange={(e) => setCategory(e.target.value)} className="border dark:bg-slate-600 border-black dark:border-gray-400 h-10 rounded-lg px-3" id="category">
               <option value="all">All Categories</option>
-              {user.categories && user.categories.map((c) => <option value={c.name}>{c.name == "all" ? "All Categories" : c.name}</option>)}
+              {user.categories && user.categories.map((c) => <option key={c.name} value={c.name}>{c.name == "all" ? "All Categories" : c.name}</option>)}
             </select>
           </div>
 
@@ -119,6 +120,7 @@ export default function Transactions({ user }: { user: User }) {
           setIsOpen={setTransactionModalOpen}
           refetchTransactions={refetch}
           updateTransaction={updateTransactionRecord}
+          setUpdateTransaction={setUpdateTransactionRecord}
           onRequestClose={closeTranssactionModal}
           categories={user.categories} />
       }

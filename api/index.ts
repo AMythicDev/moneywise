@@ -4,11 +4,10 @@ import "./config.js";
 import express, { Router, type NextFunction, type Request, type Response } from "express";
 import bcrypt from "bcrypt";
 import { connectDB, type User, type Transaction, generateDefaultCategories } from "./db.js"
-import cors from "cors";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import randomColor from "randomcolor";
-import serverless from "serverless-http";
+import cors from "cors";
 
 const db = await connectDB();
 const saltRounds = 13;
@@ -17,8 +16,9 @@ const JWT_SECRET_KEY = process.env["JWT_SECRET_KEY"];
 if (JWT_SECRET_KEY == undefined) throw new Error("jwt secret key not available");
 
 const app = express()
-const router = Router()
-router.use(cors())
+app.use(cors());
+const router = Router();
+router.use(cors());
 
 router.post('/signup', express.json(), async (req, res) => {
   let body: User = req.body;
@@ -180,4 +180,4 @@ router.put("/updatecategory/:type/:name", verifyToken, express.json(), async (re
 
 app.use("/api", router);
 
-export const handler = serverless(app);
+export default app;

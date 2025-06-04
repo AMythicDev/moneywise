@@ -7,7 +7,7 @@ import { API_URL } from "../consts";
 import { transactionModalStyles } from "../consts";
 import { refetchUser } from "../utils";
 import { SetInitialContext } from "../contexts";
-import type { Transaction, TransactionCategory } from "../types";
+import type { SetState, Transaction, TransactionCategory } from "../types";
 
 function dateToString(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth() + 1 <= 9 && 0}${d.getMonth() + 1}-${d.getDate() <= 9 && 0}${d.getDate()}`
@@ -18,17 +18,19 @@ interface TransactionProps {
   refetchTransactions: () => void,
   categories: TransactionCategory[],
   updateTransaction?: Transaction | null,
+  setUpdateTransaction? : SetState<Transaction | null> | null
   onRequestClose: () => void,
   refetchUser?: () => void,
 }
 
-export default function Transaction({ setIsOpen, refetchTransactions, categories, updateTransaction = null, ...props }: TransactionProps) {
+export default function Transaction({ setIsOpen, refetchTransactions, categories, setUpdateTransaction = null, updateTransaction = null, ...props }: TransactionProps) {
   const [description, setDescription] = useState(updateTransaction != null ? updateTransaction.description : "");
   const [type, setType] = useState(updateTransaction ? updateTransaction.type : "expense");
   const [category, setCategory] = useState(updateTransaction ? updateTransaction.category : "");
   const [recurring, setRecurring] = useState(updateTransaction ? updateTransaction.recurring : "Never");
   const [amount, setAmount] = useState(updateTransaction ? updateTransaction.amount.toString() : "");
-  const [date, setDate] = useState(dateToString(new Date()));
+  // @ts-ignore
+  const [date, setDate] = useState(dateToString(updateTransaction ? new Date(Date.parse(updateTransaction.date!)) : new Date()));
 
   const [_, setUser] = useContext(SetInitialContext);
 
@@ -66,6 +68,7 @@ export default function Transaction({ setIsOpen, refetchTransactions, categories
         body: JSON.stringify({ description: description, type: type, category: categoryRefined, amount: parseInt(amount), date: date, recurring: recurring })
       });
     setIsOpen(false);
+    setUpdateTransaction!(null);
     refetchTransactions();
   }
 

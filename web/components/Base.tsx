@@ -20,7 +20,7 @@ export default function Base({ children, className, refetchTransactions = null, 
 
   return (
     <div className="bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-100 min-h-screen dark:from-cyan-900 dark:via-teal-900 dark:to-slate-900 dark:text-white">
-      <button className="fixed shadow-md top-3 left-5 flex gap-1 dark:bg-black/20 bg-black/15 py-1 px-3 rounded-full z-[2]" onClick={toggleSidebar}>
+      <button className="fixed shadow-md top-3 left-5 flex gap-1 dark:bg-cyan-900 bg-gray-300 py-1 px-3 rounded-full z-[2]" onClick={toggleSidebar}>
         <Hamburger />
         <span className="inline-block leading-8">{sidebarWidth == '0' ? 'Menu' : 'Close'}</span>
       </button>
