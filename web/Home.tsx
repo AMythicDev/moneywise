@@ -42,7 +42,7 @@ export default function Home({ user }: HomeProps) {
 
         <div className="row-span-4 col-span-2 bg-white dark:bg-slate-800 p-5 rounded-lg shadow-sm">
           <h1 className="text-xl font-bold mb-3">Transactions This Month </h1>
-          <div className="min-h-96 mb-3">
+          <div className="min-h-96 mb-3 overflow-x-scroll">
             <TableRow className="text-sm text-gray-500" date="Date" description="Description" category="Category" amount="Amount" recurring="Recurring" type="header" />
             {transactions && transactions.map((t) => <TableRow key={t._id} {...t} date={new Date(t.date)} />)}
           </div>
